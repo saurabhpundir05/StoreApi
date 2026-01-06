@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Category {
+  c_id     Int       @id @default(autoincrement())
+  c_name   String    @unique
+  products Product[]
+}
+
+model Product {
+  p_id      Int       @id @default(autoincrement())
+  p_name    String
+  price     Decimal   @db.Decimal(10, 2)
+  c_id      Int?
+  category  Category? @relation(fields: [c_id], references: [c_id], onUpdate: Cascade, onDelete: Restrict)
+  stock     Stock?
+  discount  Discount?
+}
+
+model Stock {
+  s_id     Int     @id @default(autoincrement())
+  p_id     Int     @unique
+  quantity Int     @default(0)
+  product  Product @relation(fields: [p_id], references: [p_id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+enum DiscountType {
+  FLAT
+  PERCENT
+}
+
+model Discount {
+  d_id      Int          @id @default(autoincrement())
+  p_id      Int          @unique
+  d_type    DiscountType
+  product   Product      @relation(fields: [p_id], references: [p_id], onUpdate: Cascade, onDelete: Cascade)
+  discountValues DiscountValues?
+}
+
+model DiscountValues {
+  d_id       Int       @id
+  d_flat     Int?
+  d_percent  Decimal?  @db.Decimal(5, 2)
+  discount   Discount  @relation(fields: [d_id], references: [d_id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model users {
+  id        Int      @id
+  name      String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  isDeleted Boolean? @default(false)
+}
