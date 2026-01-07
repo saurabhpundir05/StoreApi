@@ -1,0 +1,6 @@
+.env
+node_modules
+prisma/migrations
+generated
+description.txt
+description

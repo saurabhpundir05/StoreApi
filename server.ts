@@ -4,6 +4,7 @@ import productRoutes from "./routes/productRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import discountRoutes from "./routes/discountRoutes";
 import discountTypesRoutes from "./routes/discountTypeRoutes";
+import cartRoute from "./routes/cartRoutes";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -21,6 +22,7 @@ app.use("/", productRoutes);
 app.use("/", categoryRoutes);
 app.use("/", discountRoutes);
 app.use("/", discountTypesRoutes);
+app.use("/", cartRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

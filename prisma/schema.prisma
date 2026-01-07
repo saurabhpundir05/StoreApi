@@ -56,3 +56,13 @@ model users {
   password  String   @db.VarChar(255)
   isDeleted Boolean? @default(false)
 }
+model Cart {
+  c_id      Int       @id @default(autoincrement())
+  p_id      Int       @unique
+  p_name    String
+  price     Decimal   @db.Decimal(10, 2)
+  quantity  Int       
+  d_type    String
+  d_value   Decimal    @db.Decimal(10,2)
+  t_price   Decimal   @db.Decimal(10, 2)
+}
