@@ -4,14 +4,14 @@ export interface AddCategoryInput {
 }
 
 export class AddDTO {
-  name: string;
+  c_name: string;
 
   constructor({ c_name }: AddCategoryInput) {
-    this.name = c_name;
+    this.c_name = c_name;
   }
 
   validate() {
-    if (!this.name) {
+    if (!this.c_name) {
       throw new Error("Category name is required");
     }
   }
@@ -23,14 +23,14 @@ export interface DeleteCategoryInput {
 }
 
 export class DeleteDTO {
-  id: number;
+  c_id: number;
 
   constructor({ c_id }: DeleteCategoryInput) {
-    this.id = c_id;
+    this.c_id = c_id;
   }
 
   validate() {
-    if (!this.id) {
+    if (!this.c_id) {
       throw new Error("Category id is required");
     }
   }

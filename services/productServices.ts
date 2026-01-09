@@ -3,7 +3,7 @@ import { ProductResponseDTO } from "../dtos/product.dto";
 
 //add new product
 export const addNewProduct = async (
-  name: string,
+  p_name: string,
   price: number,
   c_id: number | null = null
 ): Promise<{ product_id: number }> => {
@@ -11,13 +11,13 @@ export const addNewProduct = async (
     //tx is the transaction client
     // Check if product already exists (use findFirst because p_name is not unique)
     let product = await tx.product.findFirst({
-      where: { p_name: name },
+      where: { p_name: p_name },
     });
     if (!product) {
       // Product doesn't exist, create it
       product = await tx.product.create({
         data: {
-          p_name: name,
+          p_name: p_name,
           price,
           c_id,
         },

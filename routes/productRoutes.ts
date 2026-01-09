@@ -23,7 +23,7 @@ router.post(
       const inputData = new AddDTO(req.body);
       inputData.validate();
       const result = await addNewProduct(
-        inputData.name,
+        inputData.p_name,
         inputData.price,
         inputData.c_id
       );
@@ -66,7 +66,7 @@ router.patch(
       inputData.validate();
       const result = await updateProduct(
         inputData.p_id,
-        inputData.name,
+        inputData.p_name,
         inputData.price,
         inputData.c_id
       );

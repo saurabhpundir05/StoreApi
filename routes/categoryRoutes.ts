@@ -22,7 +22,7 @@ router.post(
     try {
       const categoryData = new AddDTO(req.body);
       categoryData.validate();
-      await insertNewCategories(categoryData.name);
+      await insertNewCategories(categoryData.c_name);
       return res.status(201).json({ message: "Category inserted" });
     } catch (err: unknown) {
       console.log(err);
@@ -41,7 +41,7 @@ router.delete(
     try {
       const categoryData = new DeleteDTO(req.body);
       categoryData.validate();
-      await deleteCategories(categoryData.id);
+      await deleteCategories(categoryData.c_id);
       return res.status(200).json({ message: "Category deleted successfully" });
     } catch (err: unknown) {
       console.log(err);

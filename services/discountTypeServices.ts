@@ -4,9 +4,9 @@ import { AddDTO } from "../dtos/discountType.dto";
 export const insertDiscountsTypes = async (data: AddDTO) => {
   data.validate();
   const prismaData = {
-    d_id: data.id,
-    d_flat: data.flat ?? null,
-    d_percent: data.percent ?? null,
+    d_id: data.d_id,
+    d_flat: data.d_flat ?? null,
+    d_percent: data.d_percent ?? null,
   };
   const discountType = await prisma.discountValues.create({
     data: prismaData,

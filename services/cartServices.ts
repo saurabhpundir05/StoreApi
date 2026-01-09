@@ -1,5 +1,5 @@
 import { prisma } from "../models/prismaDbConnection";
-import { CartItemInput } from "../dtos/cart.dto";
+import { CartItemInput, CartResponseDTO } from "../dtos/cart.dto";
 //     //steps
 //     //check if product exist in product table.
 //     //check for stock quantity if it is avaialble for input quantity
@@ -93,4 +93,10 @@ export const addToCart = async (items: CartItemInput[]) => {
 export const deleteAllRecords = async () => {
   const result = await prisma.cart.deleteMany({});
   return result;
+};
+
+//get all cart details
+export const getAllDetails = async (): Promise<CartResponseDTO[]> => {
+  const cart = await prisma.cart.findMany();
+  return cart.map((p) => new CartResponseDTO(p as any));
 };

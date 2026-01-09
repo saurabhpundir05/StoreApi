@@ -2,11 +2,11 @@ import { prisma } from "../models/prismaDbConnection";
 import { CategoryResponseDTO } from "../dtos/category.dto";
 
 //insert new category
-export const insertNewCategories = async (name: string) => {
+export const insertNewCategories = async (c_name: string) => {
   try {
     const category = await prisma.category.create({
       data: {
-        c_name: name,
+        c_name: c_name,
       },
     });
     return category;
@@ -16,10 +16,10 @@ export const insertNewCategories = async (name: string) => {
 };
 
 // delete category
-export const deleteCategories = async (id: number): Promise<void> => {
+export const deleteCategories = async (c_id: number): Promise<void> => {
   try {
     const deleted = await prisma.category.deleteMany({
-      where: { c_id: id },
+      where: { c_id: c_id },
     });
     if (deleted.count === 0) {
       throw new Error("Category not found");
@@ -30,13 +30,13 @@ export const deleteCategories = async (id: number): Promise<void> => {
 };
 
 //update existing category
-export const updateCategories = async (id: number, name: string) => {
+export const updateCategories = async (c_id: number, c_name: string) => {
   try {
     const updated = await prisma.category.update({
-      where: { c_id: id },
-      data: { c_name: name },
+      where: { c_id: c_id },
+      data: { c_name: c_name },
     });
-    return { message: "Category updated successfully", id };
+    return { message: "Category updated successfully", c_id };
   } catch (err) {
     throw err;
   }

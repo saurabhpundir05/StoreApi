@@ -1,3 +1,37 @@
+export interface Cart {
+  c_id: number | null;
+  p_id: number;
+  p_name: string;
+  price: number;
+  quantity: number;
+  d_type: string | null;
+  d_value: number | null;
+  t_price: number;
+}
+
+// DTO for Cart Response
+export class CartResponseDTO {
+  c_id: number | null;
+  p_id: number;
+  p_name: string;
+  price: number;
+  quantity: number;
+  d_type: string | null;
+  d_value: number | null;
+  t_price: number;
+
+  constructor(cart: Cart) {
+    this.c_id = cart.c_id;
+    this.p_id = cart.p_id;
+    this.p_name = cart.p_name;
+    this.price = cart.price;
+    this.quantity = cart.quantity;
+    this.d_type = cart.d_type;
+    this.d_value = cart.d_value;
+    this.t_price = cart.t_price;
+  }
+}
+
 // DTO for a single cart item
 export interface CartItemInput {
   p_name: string;

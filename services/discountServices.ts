@@ -1,12 +1,15 @@
 import { prisma } from "../models/prismaDbConnection";
 
 //insert discounts on products
-export const insertDiscounts = async (id: number, type: "FLAT" | "PERCENT") => {
+export const insertDiscounts = async (
+  p_id: number,
+  d_type: "FLAT" | "PERCENT"
+) => {
   try {
     const discount = await prisma.discount.create({
       data: {
-        p_id: id,
-        d_type: type,
+        p_id: p_id,
+        d_type: d_type,
       },
     });
     return discount;
@@ -16,10 +19,10 @@ export const insertDiscounts = async (id: number, type: "FLAT" | "PERCENT") => {
 };
 
 //delete discounts on products
-export const deleteDiscounts = async (id: number): Promise<void> => {
+export const deleteDiscounts = async (d_id: number): Promise<void> => {
   try {
     const deleted = await prisma.discount.deleteMany({
-      where: { d_id: id },
+      where: { d_id: d_id },
     });
     if (deleted.count === 0) {
       throw new Error("Discount not found");

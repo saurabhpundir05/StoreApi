@@ -5,14 +5,14 @@ export interface AddDiscountInput {
 }
 
 export class AddDTO {
-  id: number;
-  type: "FLAT" | "PERCENT";
+  p_id: number;
+  d_type: "FLAT" | "PERCENT";
   constructor({ p_id, d_type }: AddDiscountInput) {
-    this.id = p_id;
-    this.type = d_type;
+    this.p_id = p_id;
+    this.d_type = d_type;
   }
   validate() {
-    if (!this.id || !this.type) {
+    if (!this.p_id || !this.d_type) {
       throw new Error("p_id and d_type are required");
     }
   }
@@ -23,12 +23,12 @@ export interface DeleteDiscountInput {
   d_id: number;
 }
 export class DeleteDTO {
-  id: number;
+  d_id: number;
   constructor({ d_id }: DeleteDiscountInput) {
-    this.id = d_id;
+    this.d_id = d_id;
   }
   validate() {
-    if (!this.id) {
+    if (!this.d_id) {
       throw new Error("d_id is required");
     }
   }
@@ -36,21 +36,21 @@ export class DeleteDTO {
 
 // DTO for Updating Discount
 export interface UpdateDiscountInput {
-  d_id: number; // discount ID
-  d_type: "FLAT" | "PERCENT"; // discount type
+  d_id: number;
+  d_type: "FLAT" | "PERCENT";
 }
 
 export class UpdateDiscountDTO {
-  id: number;
-  type: "FLAT" | "PERCENT";
+  d_id: number;
+  d_type: "FLAT" | "PERCENT";
 
   constructor({ d_id, d_type }: UpdateDiscountInput) {
-    this.id = d_id;
-    this.type = d_type;
+    this.d_id = d_id;
+    this.d_type = d_type;
   }
 
   validate() {
-    if (!this.id || !this.type) {
+    if (!this.d_id || !this.d_type) {
       throw new Error("d_id and d_type are required");
     }
   }

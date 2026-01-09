@@ -16,7 +16,7 @@ router.post(
     try {
       const discountData = new AddDTO(req.body);
       discountData.validate();
-      await insertDiscounts(discountData.id, discountData.type);
+      await insertDiscounts(discountData.p_id, discountData.d_type);
       return res.status(200).json({ message: "Discount added successfully" });
     } catch (err: unknown) {
       console.log(err);
@@ -35,7 +35,7 @@ router.delete(
     try {
       const discountData = new DeleteDTO(req.body);
       discountData.validate();
-      await deleteDiscounts(discountData.id);
+      await deleteDiscounts(discountData.d_id);
       return res.status(200).json({ message: "Discount deleted successfully" });
     } catch (err: unknown) {
       console.log(err);
@@ -54,7 +54,10 @@ router.patch(
     try {
       const discountData = new UpdateDiscountDTO(req.body);
       discountData.validate();
-      const result = await modifyDiscount(discountData.id, discountData.type);
+      const result = await modifyDiscount(
+        discountData.d_id,
+        discountData.d_type
+      );
       if (!result) {
         return res.status(404).json({ message: "Discount not found" });
       }
