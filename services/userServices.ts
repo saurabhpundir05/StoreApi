@@ -1,98 +1,38 @@
-import { prisma } from "../models/prismaDbConnection";
+import { UserRepository } from "../repositories/user.repository";
+import { users } from "../generated/prisma/client";
 
-// Find user by ID
-export const findUserById = async (id: number) => {
-  return prisma.users.findUnique({
-    where: { id },
-    select: { id: true },
-  });
-};
+const userRepo = new UserRepository();
 
-// Create new user
+// Signup
 export const createNewUser = async (
   id: number,
   name: string,
   password: string
-) => {
-  return prisma.users.create({
-    data: {
-      id,
-      name,
-      password,
-      isDeleted: false,
-    },
-  });
+): Promise<users> => {
+  return userRepo.create({ id, name, password, isDeleted: false });
 };
 
-//check for id and log in
-//Using an interface ensures TypeScript checks that any object returned matches this shape.
-export interface LoginUserResult {
-  id: number | string;
-  name: string;
-  password: string;
-}
-export const loginUser = async (
-  id: number | string //This function returns a Promise that resolves to either a LoginUserResult
-): // object or null (if no user is found).
-Promise<LoginUserResult | null> => {
-  const user = await prisma.users.findFirst({
-    where: {
-      id: typeof id === "string" ? Number(id) : id,
-      isDeleted: false,
-    },
-    select: {
-      id: true,
-      name: true,
-      password: true,
-    },
-  });
-  return user;
-};
+// Find user by ID
+export const findUserById = (id: number) => userRepo.findUserById(id);
 
-//user account hard delete
-export const deleteUserAccount = async (
-  id: number
-): Promise<{ affectedRows: number }> => {
-  const result = await prisma.users.deleteMany({
-    where: {
-      id,
-      isDeleted: false,
-    },
-  });
-  return { affectedRows: result.count };
-};
+// Login user
+export const loginUser = (id: number | string) => userRepo.loginUser(id);
 
-//soft delete user account
-export const softDeleteUserAccount = async (
-  id: number
-): Promise<{ affectedRows: number }> => {
-  const result = await prisma.users.updateMany({
-    where: {
-      id,
-      isDeleted: false,
-    },
-    data: {
-      isDeleted: true,
-    },
-  });
-  return { affectedRows: result.count };
-};
+// Hard delete
+export const deleteUserAccount = (id: number) => userRepo.deleteUser(id);
 
-// update username and password
-export const updateUserDetails = async (
-  id: number,
-  name: string,
-  password: string
-): Promise<{ affectedRows: number }> => {
-  const result = await prisma.users.updateMany({
-    where: {
-      id,
-      isDeleted: false, // soft-deleted users cannot update
-    },
-    data: {
-      name,
-      password,
-    },
-  });
-  return { affectedRows: result.count };
-};
+// Soft delete
+export const softDeleteUserAccount = (id: number) =>
+  userRepo.softDeleteUser(id);
+
+// Update user details
+export const updateUserDetails = (id: number, name: string, password: string) =>
+  userRepo.updateUserDetails(id, name, password);
+
+// Check soft-deleted
+export const checkusersoftdeleted = (id: number | string) =>
+  userRepo.checkSoftDeletedUser(id);
+
+// Activate soft delete
+export const activatesoftdeleteuser = (id: number) =>
+  userRepo.activateSoftDeletedUser(id);

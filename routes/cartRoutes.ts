@@ -1,7 +1,11 @@
 import express, { Router, Request, Response } from "express";
 import checkAuthUsingJwt from "../middleware/checkAuth";
-import { AddCartDTO } from "../dtos/cart.dto";
-import { addToCart, deleteAllRecords } from "../services/cartServices";
+import { AddCartDTO, CartResponseDTO } from "../dtos/cart.dto";
+import {
+  addToCart,
+  deleteAllRecords,
+  getAllCartDetails,
+} from "../services/cartServices";
 const router: Router = express.Router();
 
 //add to cart
@@ -42,6 +46,21 @@ router.delete(
       const message =
         err instanceof Error ? err.message : "Something went wrong";
       return res.status(400).json({ success: false, message });
+    }
+  }
+);
+
+//Get all cart details
+router.get(
+  "/getAllCartDetails",
+  checkAuthUsingJwt,
+  async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const cartDTOs: CartResponseDTO[] = await getAllCartDetails();
+      return res.status(200).json(cartDTOs);
+    } catch (err: unknown) {
+      console.error(err);
+      return res.status(500).json({ message: "Database error" });
     }
   }
 );

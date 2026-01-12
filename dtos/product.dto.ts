@@ -4,7 +4,6 @@ export interface Product {
   price: number;
   c_id: number | null;
 }
-
 // DTO for Product Response
 export class ProductResponseDTO {
   p_id: number;
@@ -55,7 +54,6 @@ export interface UpdateProductInput {
   price: number;
   c_id?: number | null; // make optional
 }
-
 export class UpdateDTO {
   p_id: number;
   p_name: string;

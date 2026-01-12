@@ -25,7 +25,7 @@ router.post(
       const result = await addNewProduct(
         inputData.p_name,
         inputData.price,
-        inputData.c_id
+        Number(inputData.c_id)
       );
       return res.status(201).json({
         message: "Product added successfully",
@@ -68,7 +68,7 @@ router.patch(
         inputData.p_id,
         inputData.p_name,
         inputData.price,
-        inputData.c_id
+        Number(inputData.c_id)
       );
       if (!result) {
         return res.status(404).json({ message: "Product not found" });

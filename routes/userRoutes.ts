@@ -7,10 +7,13 @@ import {
   deleteUserAccount,
   softDeleteUserAccount,
   updateUserDetails,
+  activatesoftdeleteuser,
+  checkusersoftdeleted,
 } from "../services/userServices";
 import { SignupDTO, LoginDTO } from "../dtos/user.dto";
 import { generateToken } from "../helpers/jwtToken";
 import checkAuthUsingJwt from "../middleware/checkAuth";
+import { registerToken } from "../middleware/checkAuth";
 import checkUser from "../middleware/checkTrueUser";
 const router: Router = express.Router();
 
@@ -63,6 +66,7 @@ router.post(
         return res.status(401).json({ message: "Invalid credentials" });
       }
       const token = generateToken(user.id as number, user.name);
+      registerToken(token);
       return res.status(200).json({
         message: "Login successful",
         token,
@@ -149,6 +153,40 @@ router.patch(
       });
     } catch (err: unknown) {
       console.error(err);
+      if (err instanceof Error) {
+        return res.status(400).json({ message: err.message });
+      }
+      return res.status(400).json({ message: "Something went wrong" });
+    }
+  }
+);
+
+//activate user// remove soft delete
+router.patch(
+  "/removeSoftDelete",
+  async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const loginData = new LoginDTO(req.body);
+      loginData.validate();
+      const user = await checkusersoftdeleted(loginData.id);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      const isPasswordMatch = await bcrypt.compare(
+        loginData.password,
+        user.password
+      );
+      if (!isPasswordMatch) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      const result = await activatesoftdeleteuser(Number(loginData.id));
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Cant activate" });
+      }
+      return res.status(200).json({
+        message: "User activated successfully",
+      });
+    } catch (err: unknown) {
       if (err instanceof Error) {
         return res.status(400).json({ message: err.message });
       }

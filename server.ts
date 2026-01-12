@@ -5,6 +5,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 import discountRoutes from "./routes/discountRoutes";
 import discountTypesRoutes from "./routes/discountTypeRoutes";
 import cartRoute from "./routes/cartRoutes";
+import stockRoute from "./routes/stockRoute";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -16,13 +17,13 @@ const PORT = Number(process.env.PORT) || 3001;
 
 app.use(cors());
 app.use(express.json());
-
 app.use("/", userRoutes);
 app.use("/", productRoutes);
 app.use("/", categoryRoutes);
 app.use("/", discountRoutes);
 app.use("/", discountTypesRoutes);
 app.use("/", cartRoute);
+app.use("/", stockRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

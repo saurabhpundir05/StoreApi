@@ -25,3 +25,20 @@ export class AddDTO {
     }
   }
 }
+
+//DTO for getting all discounts
+export interface Discount {
+  d_id: number;
+  d_flat: number | null;
+  d_percent: number | null;
+}
+export class DiscountResponseDTO {
+  d_id: number;
+  d_flat: number | null;
+  d_percent: number | null;
+  constructor(discounts: Discount) {
+    this.d_id = discounts.d_id;
+    this.d_flat = discounts.d_flat;
+    this.d_percent = discounts.d_percent;
+  }
+}

@@ -1,10 +1,16 @@
 import express, { Router, Request, Response } from "express";
 import {
-  insertDiscounts,
-  deleteDiscounts,
+  insertDiscount,
+  deleteDiscount,
   modifyDiscount,
+  getAllDiscounts,
 } from "../services/discountServices";
-import { AddDTO, DeleteDTO, UpdateDiscountDTO } from "../dtos/discount.dto";
+import {
+  AddDTO,
+  DeleteDTO,
+  UpdateDiscountDTO,
+  DiscountResponseDTO,
+} from "../dtos/discount.dto";
 import checkAuthUsingJwt from "../middleware/checkAuth";
 const router: Router = express.Router();
 
@@ -16,8 +22,11 @@ router.post(
     try {
       const discountData = new AddDTO(req.body);
       discountData.validate();
-      await insertDiscounts(discountData.p_id, discountData.d_type);
-      return res.status(200).json({ message: "Discount added successfully" });
+      const result = await insertDiscount(
+        discountData.p_id,
+        discountData.d_type
+      );
+      return res.status(200).json({ d_id: result });
     } catch (err: unknown) {
       console.log(err);
       if (err instanceof Error)
@@ -35,7 +44,7 @@ router.delete(
     try {
       const discountData = new DeleteDTO(req.body);
       discountData.validate();
-      await deleteDiscounts(discountData.d_id);
+      await deleteDiscount(discountData.d_id);
       return res.status(200).json({ message: "Discount deleted successfully" });
     } catch (err: unknown) {
       console.log(err);
@@ -69,6 +78,21 @@ router.patch(
       if (err instanceof Error)
         return res.status(400).json({ message: err.message });
       return res.status(400).json({ message: "Something went wrong" });
+    }
+  }
+);
+
+//Get all discounts
+router.get(
+  "/getAllDiscount",
+  checkAuthUsingJwt,
+  async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const discountDTOs: DiscountResponseDTO[] = await getAllDiscounts();
+      return res.status(200).json(discountDTOs);
+    } catch (err: unknown) {
+      console.error(err);
+      return res.status(500).json({ message: "Database error" });
     }
   }
 );

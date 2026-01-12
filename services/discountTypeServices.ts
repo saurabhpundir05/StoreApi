@@ -1,16 +1,13 @@
-import { prisma } from "../models/prismaDbConnection";
-import { AddDTO } from "../dtos/discountType.dto";
+import { DiscountValuesRepository } from "../repositories/discount.type.repository";
+import { AddDTO, DiscountResponseDTO } from "../dtos/discountType.dto";
 
-export const insertDiscountsTypes = async (data: AddDTO) => {
-  data.validate();
-  const prismaData = {
-    d_id: data.d_id,
-    d_flat: data.d_flat ?? null,
-    d_percent: data.d_percent ?? null,
-  };
-  const discountType = await prisma.discountValues.create({
-    data: prismaData,
-  });
+const discountValuesRepo = new DiscountValuesRepository();
 
-  return discountType;
-};
+export const insertDiscountValues = (data: AddDTO) =>
+  discountValuesRepo.insertDiscountValues(data);
+
+export const getAllDiscountValues = (): Promise<DiscountResponseDTO[]> =>
+  discountValuesRepo.getAllDiscountValues();
+
+export const updateDiscountValues = (data: AddDTO) =>
+  discountValuesRepo.updateDiscountValues(data);

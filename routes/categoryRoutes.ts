@@ -7,9 +7,9 @@ import {
   CategoryResponseDTO,
 } from "../dtos/category.dto";
 import {
-  insertNewCategories,
-  deleteCategories,
-  updateCategories,
+  insertNewCategory,
+  deleteCategory,
+  updateCategory,
   getAllCategories,
 } from "../services/categoryServices";
 const router: Router = express.Router();
@@ -22,7 +22,7 @@ router.post(
     try {
       const categoryData = new AddDTO(req.body);
       categoryData.validate();
-      await insertNewCategories(categoryData.c_name);
+      await insertNewCategory(categoryData.c_name);
       return res.status(201).json({ message: "Category inserted" });
     } catch (err: unknown) {
       console.log(err);
@@ -41,7 +41,7 @@ router.delete(
     try {
       const categoryData = new DeleteDTO(req.body);
       categoryData.validate();
-      await deleteCategories(categoryData.c_id);
+      await deleteCategory(categoryData.c_id);
       return res.status(200).json({ message: "Category deleted successfully" });
     } catch (err: unknown) {
       console.log(err);
@@ -60,7 +60,7 @@ router.patch(
     try {
       const categoryData = new UpdateDTO(req.body);
       categoryData.validate();
-      await updateCategories(categoryData.c_id, categoryData.c_name);
+      await updateCategory(categoryData.c_id, categoryData.c_name);
       return res.status(201).json({ message: "Category modified" });
     } catch (err: unknown) {
       console.log(err);
