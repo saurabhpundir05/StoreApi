@@ -3,7 +3,6 @@ export interface AddDiscountInput {
   p_id: number;
   d_type: "FLAT" | "PERCENT";
 }
-
 export class AddDTO {
   p_id: number;
   d_type: "FLAT" | "PERCENT";
@@ -39,7 +38,6 @@ export interface UpdateDiscountInput {
   d_id: number;
   d_type: "FLAT" | "PERCENT";
 }
-
 export class UpdateDiscountDTO {
   d_id: number;
   d_type: "FLAT" | "PERCENT";

@@ -13,42 +13,39 @@ export class ProductRepository extends BaseRepository<any> {
     price: number,
     c_id: number | null = null
   ): Promise<{ product_id: number }> {
-    return prisma.$transaction(async (tx) => {
-      // Check if product exists
-      let productEntry = await tx.product.findFirst({ where: { p_name } });
+    // Check if product exists
+    let productEntry = await prisma.product.findFirst({ where: { p_name } });
 
-      if (!productEntry) {
-        // Create new product
-        productEntry = await tx.product.create({
-          data: { p_name, price, c_id },
-        });
+    if (!productEntry) {
+      // Create new product
+      productEntry = await prisma.product.create({
+        data: { p_name, price, c_id },
+      });
 
-        // Create initial stock entry
-        await tx.stock.create({
-          data: { p_id: productEntry.p_id, quantity: 1 },
+      // Create initial stock entry
+      await prisma.stock.create({
+        data: { p_id: productEntry.p_id, quantity: 1 },
+      });
+    } else {
+      // Product exists - increment stock
+      const stockEntry = await prisma.stock.findUnique({
+        where: { p_id: productEntry.p_id },
+      });
+      if (stockEntry) {
+        await prisma.stock.update({
+          where: { p_id: productEntry.p_id },
+          data: { quantity: stockEntry.quantity + 1 },
         });
       } else {
-        // Product exists → increment stock
-        const stockEntry = await tx.stock.findUnique({
-          where: { p_id: productEntry.p_id },
+        await prisma.stock.create({
+          data: { p_id: productEntry.p_id, quantity: 1 },
         });
-
-        if (stockEntry) {
-          await tx.stock.update({
-            where: { p_id: productEntry.p_id },
-            data: { quantity: stockEntry.quantity + 1 },
-          });
-        } else {
-          await tx.stock.create({
-            data: { p_id: productEntry.p_id, quantity: 1 },
-          });
-        }
       }
-
-      return { product_id: productEntry.p_id };
-    });
+    }
+    return { product_id: productEntry.p_id };
   }
 
+  //display all products
   async getAllProductDetails(): Promise<ProductResponseDTO[]> {
     const products: any[] = await this.model.findMany();
     return products.map(
@@ -62,6 +59,7 @@ export class ProductRepository extends BaseRepository<any> {
     );
   }
 
+  //update product - p_name c_id
   async updateProduct(
     p_id: number,
     p_name: string,
@@ -78,24 +76,23 @@ export class ProductRepository extends BaseRepository<any> {
     return { message: "Product updated successfully", p_id };
   }
 
+  //delete product
   async deleteProductDetails(
     p_id: number
   ): Promise<{ message: string; p_id: number } | null> {
-    return prisma.$transaction(async (tx) => {
-      // Adjust stock if exists
-      const stockEntry = await tx.stock.findUnique({ where: { p_id } });
-      if (stockEntry) {
-        await tx.stock.update({
-          where: { p_id },
-          data: { quantity: Math.max(stockEntry.quantity - 1, 0) },
-        });
-      }
-
-      const deletedProduct = await tx.product.deleteMany({ where: { p_id } });
-
-      if (deletedProduct.count === 0) return null;
-
-      return { message: "Product deleted successfully", p_id };
+    const stockEntry = await prisma.stock.findUnique({
+      where: { p_id },
     });
+    if (stockEntry) {
+      await prisma.stock.update({
+        where: { p_id },
+        data: { quantity: Math.max(stockEntry.quantity - 1, 0) },
+      });
+    }
+    const deletedProduct = await prisma.product.deleteMany({
+      where: { p_id },
+    });
+    if (deletedProduct.count === 0) return null;
+    return { message: "Product deleted successfully", p_id };
   }
 }

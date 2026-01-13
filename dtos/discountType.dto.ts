@@ -42,3 +42,21 @@ export class DiscountResponseDTO {
     this.d_percent = discounts.d_percent;
   }
 }
+
+// DTO for Deleting Discount Values
+export interface DeleteDiscountInput {
+  d_id: number;
+}
+export class DeleteDTO {
+  d_id: number;
+
+  constructor({ d_id }: DeleteDiscountInput) {
+    this.d_id = d_id;
+  }
+
+  validate() {
+    if (this.d_id == null) {
+      throw new Error("d_id is required");
+    }
+  }
+}

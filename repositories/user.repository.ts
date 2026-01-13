@@ -3,11 +3,12 @@ import { BaseRepository } from "./base.repository";
 import { users } from "../generated/prisma/client";
 
 export class UserRepository extends BaseRepository<users> {
+  //super refers to the parent class (BaseRepository) Calling super(...) invokes the parent’s constructor
   constructor() {
     super(prisma.users);
   }
 
-  // Find user by ID (select only id)
+  // Find user by ID
   async findUserById(id: number): Promise<users | null> {
     return this.model.findUnique({
       where: { id },
@@ -15,7 +16,7 @@ export class UserRepository extends BaseRepository<users> {
     });
   }
 
-  // Login user: get id, name, password
+  // Login user get id, name, password
   async loginUser(id: number | string): Promise<users | null> {
     return this.model.findFirst({
       where: {
@@ -43,7 +44,7 @@ export class UserRepository extends BaseRepository<users> {
     return { affectedRows: result.count };
   }
 
-  // Update user details (name + password)
+  // Update user details - name and password
   async updateUserDetails(
     id: number,
     name: string,
@@ -64,7 +65,7 @@ export class UserRepository extends BaseRepository<users> {
     });
   }
 
-  // Activate soft-deleted user
+  // Activate soft deleted user
   async activateSoftDeletedUser(id: number): Promise<{ affectedRows: number }> {
     const result = await this.model.updateMany({
       where: { id, isDeleted: true },
@@ -73,7 +74,7 @@ export class UserRepository extends BaseRepository<users> {
     return { affectedRows: result.count };
   }
 
-  async findByName(name: string): Promise<users | null> {
-    return this.model.findFirst({ where: { name } });
-  }
+  // async findByName(name: string): Promise<users | null> {
+  //   return this.model.findFirst({ where: { name } });
+  // }
 }

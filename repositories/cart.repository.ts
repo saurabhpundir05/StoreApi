@@ -1,4 +1,3 @@
-// src/repositories/cart.repository.ts
 import { prisma } from "../models/prismaDbConnection";
 import { BaseRepository } from "./base.repository";
 import { CartItemInput, CartResponseDTO } from "../dtos/cart.dto";
@@ -24,7 +23,7 @@ export class CartRepository extends BaseRepository<any> {
       });
       if (!stock) throw new Error("Stock not available");
       if (Number(stock.quantity) < item.quantity)
-        throw new Error("Insufficient stock");
+        throw new Error("Out of stock");
 
       // Update stock
       await prisma.stock.update({
@@ -90,6 +89,7 @@ export class CartRepository extends BaseRepository<any> {
     return this.model.deleteMany({});
   }
 
+  //Display all cart details
   async getAllDetails(): Promise<CartResponseDTO[]> {
     const cart: any[] = await this.model.findMany();
     return cart.map(

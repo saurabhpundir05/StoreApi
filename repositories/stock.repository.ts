@@ -1,4 +1,3 @@
-// src/repositories/stock.repository.ts
 import { prisma } from "../models/prismaDbConnection";
 import { BaseRepository } from "./base.repository";
 import { StockResponseDTO } from "../dtos/stock.dto";
@@ -8,6 +7,7 @@ export class StockRepository extends BaseRepository<any> {
     super(prisma.stock);
   }
 
+  //update stock - quantity
   async updateStockQuantity(p_id: number, quantity: number): Promise<any> {
     try {
       const updatedStock = await this.model.update({
@@ -20,6 +20,7 @@ export class StockRepository extends BaseRepository<any> {
     }
   }
 
+  //display all stock table data
   async getAllStock(): Promise<StockResponseDTO[]> {
     const stock: any[] = await this.model.findMany();
     return stock.map(

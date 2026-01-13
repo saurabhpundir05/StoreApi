@@ -25,7 +25,6 @@ export interface AddProductInput {
   price: number | string;
   c_id?: number | null;
 }
-
 export class AddDTO {
   p_name: string;
   price: number;
@@ -52,7 +51,7 @@ export interface UpdateProductInput {
   p_id: number;
   p_name: string;
   price: number;
-  c_id?: number | null; // make optional
+  c_id?: number | null;
 }
 export class UpdateDTO {
   p_id: number;
@@ -64,7 +63,7 @@ export class UpdateDTO {
     this.p_id = p_id;
     this.p_name = p_name;
     this.price = price;
-    this.c_id = c_id ?? null; // default to null if undefined
+    this.c_id = c_id ?? null;
   }
 
   validate() {
@@ -79,7 +78,6 @@ export class UpdateDTO {
 export interface DeleteProductInput {
   p_id: number;
 }
-
 export class DeleteDTO {
   p_id: number;
 
@@ -98,7 +96,6 @@ export class DeleteDTO {
 export interface AddToCartInput {
   p_name: string;
 }
-
 export class AddToCartDTO {
   p_name: string;
 

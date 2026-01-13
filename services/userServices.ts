@@ -1,6 +1,8 @@
 import { UserRepository } from "../repositories/user.repository";
 import { users } from "../generated/prisma/client";
 
+//creates a new repository instance wired to the users table,
+//giving you reusable CRUD methods through inheritance.
 const userRepo = new UserRepository();
 
 // Signup

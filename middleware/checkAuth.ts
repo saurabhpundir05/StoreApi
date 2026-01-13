@@ -7,6 +7,7 @@ let latestToken: string | null = null;
 export function registerToken(token: string) {
   latestToken = token;
 }
+//authentication using Jwt
 async function checkAuthUsingJwt(
   req: Request,
   res: Response,

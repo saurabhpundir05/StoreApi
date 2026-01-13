@@ -7,6 +7,7 @@ export class DiscountRepository extends BaseRepository<any> {
     super(prisma.discount);
   }
 
+  //insert discount
   async insertDiscount(
     p_id: number,
     d_type: "FLAT" | "PERCENT"
@@ -17,6 +18,7 @@ export class DiscountRepository extends BaseRepository<any> {
     return discount.d_id;
   }
 
+  //delete discount
   async deleteDiscount(d_id: number): Promise<void> {
     const deleted = await this.model.deleteMany({ where: { d_id } });
     if (deleted.count === 0) {
@@ -24,6 +26,7 @@ export class DiscountRepository extends BaseRepository<any> {
     }
   }
 
+  //update discount d_type
   async modifyDiscount(
     d_id: number,
     d_type: "FLAT" | "PERCENT"
@@ -37,6 +40,7 @@ export class DiscountRepository extends BaseRepository<any> {
     return { message: "Discount type updated successfully", d_id };
   }
 
+  //display all discounts
   async getAllDiscounts(): Promise<DiscountResponseDTO[]> {
     const discounts: any[] = await this.model.findMany();
     return discounts.map(

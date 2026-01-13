@@ -1,4 +1,3 @@
-// src/repositories/discountValues.repository.ts
 import { prisma } from "../models/prismaDbConnection";
 import { BaseRepository } from "./base.repository";
 import { AddDTO, DiscountResponseDTO } from "../dtos/discountType.dto";
@@ -8,6 +7,7 @@ export class DiscountValuesRepository extends BaseRepository<any> {
     super(prisma.discountValues);
   }
 
+  //insert discount values
   async insertDiscountValues(data: AddDTO): Promise<any> {
     data.validate();
 
@@ -21,6 +21,7 @@ export class DiscountValuesRepository extends BaseRepository<any> {
     return discountType;
   }
 
+  //display all discount values
   async getAllDiscountValues(): Promise<DiscountResponseDTO[]> {
     const discounts: any[] = await this.model.findMany();
     return discounts.map(
@@ -33,14 +34,13 @@ export class DiscountValuesRepository extends BaseRepository<any> {
     );
   }
 
+  //update discount values d_percent or d_flat
   async updateDiscountValues(data: AddDTO): Promise<any> {
     data.validate();
-
     const updated = await this.model.updateMany({
       where: { d_id: data.d_id },
       data: { d_flat: data.d_flat, d_percent: data.d_percent },
     });
-
     return updated;
   }
 }

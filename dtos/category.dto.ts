@@ -2,7 +2,6 @@
 export interface AddCategoryInput {
   c_name: string;
 }
-
 export class AddDTO {
   c_name: string;
 
@@ -21,7 +20,6 @@ export class AddDTO {
 export interface DeleteCategoryInput {
   c_id: number;
 }
-
 export class DeleteDTO {
   c_id: number;
 
@@ -41,7 +39,6 @@ export interface UpdateCategoryInput {
   c_id: number;
   c_name: string;
 }
-
 export class UpdateDTO {
   c_id: number;
   c_name: string;
@@ -63,7 +60,6 @@ export interface Category {
   c_id: number;
   c_name: string;
 }
-
 // DTO for Category Response
 export class CategoryResponseDTO {
   c_id: number;
