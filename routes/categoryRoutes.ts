@@ -8,9 +8,9 @@ import {
 } from "../dtos/category.dto";
 import {
   insertNewCategory,
-  deleteCategory,
-  updateCategory,
   getAllCategories,
+  updateCategory,
+  deleteCategory,
 } from "../services/categoryServices";
 const router: Router = express.Router();
 
@@ -24,44 +24,6 @@ router.post(
       categoryData.validate();
       await insertNewCategory(categoryData.c_name);
       return res.status(201).json({ message: "Category inserted" });
-    } catch (err: unknown) {
-      console.log(err);
-      if (err instanceof Error)
-        return res.status(400).json({ message: err.message });
-      return res.status(400).json({ message: "Something went wrong" });
-    }
-  }
-);
-
-//delete a category
-router.delete(
-  "/deleteCategory",
-  checkAuthUsingJwt,
-  async (req: Request, res: Response) => {
-    try {
-      const categoryData = new DeleteDTO(req.body);
-      categoryData.validate();
-      await deleteCategory(categoryData.c_id);
-      return res.status(200).json({ message: "Category deleted successfully" });
-    } catch (err: unknown) {
-      console.log(err);
-      if (err instanceof Error)
-        return res.status(400).json({ message: err.message });
-      return res.status(400).json({ message: "Something went wrong" });
-    }
-  }
-);
-
-//modiy a category
-router.patch(
-  "/updateCategory",
-  checkAuthUsingJwt,
-  async (req: Request, res: Response) => {
-    try {
-      const categoryData = new UpdateDTO(req.body);
-      categoryData.validate();
-      await updateCategory(categoryData.c_id, categoryData.c_name);
-      return res.status(201).json({ message: "Category modified" });
     } catch (err: unknown) {
       console.log(err);
       if (err instanceof Error)
@@ -85,4 +47,60 @@ router.get(
     }
   }
 );
+
+//modiy a category
+router.patch(
+  "/updateCategory",
+  checkAuthUsingJwt,
+  async (req: Request, res: Response) => {
+    try {
+      const categoryData = new UpdateDTO(req.body);
+      categoryData.validate();
+      const result = await updateCategory(
+        categoryData.c_id,
+        categoryData.c_name
+      );
+      if (!result) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      return res.status(200).json({
+        message: "Category modified",
+        c_id: result,
+      });
+    } catch (err: unknown) {
+      console.error(err);
+      if (err instanceof Error) {
+        return res.status(400).json({ message: err.message });
+      }
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+//delete a category
+router.delete(
+  "/deleteCategory",
+  checkAuthUsingJwt,
+  async (req: Request, res: Response) => {
+    try {
+      const categoryData = new DeleteDTO(req.body);
+      categoryData.validate();
+      const result = await deleteCategory(categoryData.c_id);
+      if (!result) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      return res.status(200).json({
+        message: "Category deleted successfully",
+        c_id: result,
+      });
+    } catch (err: unknown) {
+      console.error(err);
+      if (err instanceof Error) {
+        return res.status(400).json({ message: err.message });
+      }
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
 export default router;

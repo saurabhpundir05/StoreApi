@@ -3,10 +3,7 @@ import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 
 dotenv.config();
-let latestToken: string | null = null;
-export function registerToken(token: string) {
-  latestToken = token;
-}
+
 //authentication using Jwt
 async function checkAuthUsingJwt(
   req: Request,
@@ -26,11 +23,6 @@ async function checkAuthUsingJwt(
       id: number;
       name: string;
     };
-    if (latestToken && latestToken !== token) {
-      return res
-        .status(401)
-        .json({ message: "Session expired due to new login" });
-    }
     (req as any).user = decoded;
     next();
   } catch (err) {

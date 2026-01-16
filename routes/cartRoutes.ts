@@ -4,7 +4,7 @@ import { AddCartDTO, CartResponseDTO } from "../dtos/cart.dto";
 import {
   addToCart,
   deleteAllRecords,
-  getAllCartDetails,
+  getAllDetails,
 } from "../services/cartServices";
 const router: Router = express.Router();
 
@@ -56,7 +56,7 @@ router.get(
   checkAuthUsingJwt,
   async (req: Request, res: Response): Promise<Response> => {
     try {
-      const cartDTOs: CartResponseDTO[] = await getAllCartDetails();
+      const cartDTOs: CartResponseDTO[] = await getAllDetails();
       return res.status(200).json(cartDTOs);
     } catch (err: unknown) {
       console.error(err);

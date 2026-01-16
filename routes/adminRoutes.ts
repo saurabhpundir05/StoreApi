@@ -1,36 +1,36 @@
 import express, { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import {
-  createNewUser,
-  getUserDetail,
-  updateUser,
-  deleteUser,
-  softDeleteUser,
-} from "../services/userServices";
-import { SignupDTO, LoginDTO } from "../dtos/user.dto";
+  insertAdmin,
+  getAdminDetail,
+  updateAdmin,
+  softDeleteAdmin,
+  deleteAdmin,
+} from "../services/adminServices";
+import { SignupDTO, LoginDTO } from "../dtos/admin.dto";
 import { generateToken } from "../helpers/jwtToken";
 import checkAuthUsingJwt from "../middleware/checkAuth";
 import checkUser from "../middleware/checkTrueUser";
 const router: Router = express.Router();
 
 // Signup route
-router.post("/signup", async (req: Request, res: Response) => {
+router.post("/signupAdmin", async (req: Request, res: Response) => {
   try {
     const signupData = new SignupDTO(req.body);
     signupData.validate();
     const hashedPassword = await bcrypt.hash(signupData.password, 10);
-    const result = await createNewUser(
+    const result = await insertAdmin(
       Number(signupData.id),
       signupData.name,
       hashedPassword
     );
     if (result != null) {
       return res.status(201).json({
-        message: "User created successfully, now Log In",
+        message: "Admin created successfully, now Log In",
       });
     }
     return res.status(409).json({
-      message: "User with this id already exist",
+      message: "Admin with this id already exist",
     });
   } catch (err: unknown) {
     console.error(err);
@@ -39,28 +39,28 @@ router.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
-//Login route
-router.post("/login", async (req: Request, res: Response) => {
+// Login route
+router.post("/loginAdmin", async (req: Request, res: Response) => {
   try {
     const loginData = new LoginDTO(req.body);
     loginData.validate();
-    const getUserPassword = await getUserDetail(Number(loginData.id));
-    if (getUserPassword.isDeleted == true) {
-      return res.status(401).json({ message: "User soft deleted" });
+    const getAdminPassword = await getAdminDetail(Number(loginData.id));
+    if (getAdminPassword.isDeleted == true) {
+      return res.status(401).json({ message: "Admin soft /hard deleted" });
     }
-    if (!getUserPassword) {
+    if (!getAdminPassword) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     const isPasswordMatch = await bcrypt.compare(
       loginData.password,
-      getUserPassword.password
+      getAdminPassword.password
     );
     if (!isPasswordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     const token = generateToken(
-      getUserPassword.id as number,
-      getUserPassword.name
+      getAdminPassword.id as number,
+      getAdminPassword.name
     );
     return res.status(200).json({
       message: "Login successful",
@@ -74,9 +74,9 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-//update password and name
+// update password and name
 router.patch(
-  "/updateUserDetails",
+  "/updateAdminDetails",
   checkAuthUsingJwt,
   checkUser,
   async (req: Request, res: Response) => {
@@ -84,17 +84,17 @@ router.patch(
       const inputData = new SignupDTO(req.body);
       inputData.validate();
       const hashedPassword = await bcrypt.hash(inputData.password, 10);
-      const result = await updateUser(
+      const result = await updateAdmin(
         Number(inputData.id),
         inputData.name,
         hashedPassword
       );
       if (!result) {
-        return res.status(409).json({ message: "User not found to update" });
+        return res.status(409).json({ message: "Admin not found to update" });
       }
       return res
         .status(201)
-        .json({ message: `User with ${result} id is updated` });
+        .json({ message: `Admin with ${result} id is updated` });
     } catch (err: unknown) {
       console.error(err);
       if (err instanceof Error) {
@@ -105,34 +105,34 @@ router.patch(
   }
 );
 
-// //soft delete user account
+// soft delete admin account
 router.delete(
-  "/softDeleteUser",
+  "/softDeleteAdmin",
   checkAuthUsingJwt,
   checkUser,
   async (req: Request, res: Response) => {
     try {
       const inputData = new LoginDTO(req.body);
       inputData.validate();
-      const getUserPassword = await getUserDetail(Number(inputData.id));
-      if (!getUserPassword) {
+      const getAdminPassword = await getAdminDetail(Number(inputData.id));
+      if (!getAdminPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       const isPasswordMatch = await bcrypt.compare(
         inputData.password,
-        getUserPassword.password
+        getAdminPassword.password
       );
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await softDeleteUser(Number(inputData.id));
+      const result = await softDeleteAdmin(Number(inputData.id));
       if (!result) {
         return res.status(404).json({
-          message: "User not found / Is hard deleted / Is SoftDeleted",
+          message: "Admin not found / Is hard deleted / Is SoftDeleted",
         });
       }
       return res.status(200).json({
-        message: "User soft deleted successfully",
+        message: "Admin soft deleted successfully",
       });
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -143,34 +143,34 @@ router.delete(
   }
 );
 
-// delete user account
+// delete admin account
 router.delete(
-  "/deleteUserId",
+  "/deleteAdminId",
   checkAuthUsingJwt,
   checkUser,
   async (req: Request, res: Response): Promise<Response> => {
     try {
       const inputData = new LoginDTO(req.body);
       inputData.validate();
-      const getUserPassword = await getUserDetail(Number(inputData.id));
-      if (!getUserPassword) {
+      const getAdminPassword = await getAdminDetail(Number(inputData.id));
+      if (!getAdminPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       const isPasswordMatch = await bcrypt.compare(
         inputData.password,
-        getUserPassword.password
+        getAdminPassword.password
       );
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await deleteUser(Number(inputData.id));
+      const result = await deleteAdmin(Number(inputData.id));
       if (!result) {
         return res
           .status(404)
-          .json({ message: "User not found / Is hard deleted" });
+          .json({ message: "Admin not found / Is hard deleted" });
       }
       return res.status(200).json({
-        message: "User deleted successfully",
+        message: "Admin deleted successfully",
       });
     } catch (err: unknown) {
       if (err instanceof Error) {

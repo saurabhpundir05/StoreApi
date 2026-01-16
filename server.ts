@@ -1,4 +1,5 @@
 import express from "express";
+import adminRoutes from "./routes/adminRoutes";
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
@@ -17,6 +18,7 @@ const PORT = Number(process.env.PORT) || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use("/", adminRoutes);
 app.use("/", userRoutes);
 app.use("/", productRoutes);
 app.use("/", categoryRoutes);

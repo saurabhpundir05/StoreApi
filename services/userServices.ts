@@ -1,40 +1,85 @@
+import { prisma } from "../models/prismaDbConnection";
 import { UserRepository } from "../repositories/user.repository";
-import { users } from "../generated/prisma/client";
 
-//creates a new repository instance wired to the users table,
-//giving you reusable CRUD methods through inheritance.
-const userRepo = new UserRepository();
-
-// Signup
+//signup
 export const createNewUser = async (
   id: number,
   name: string,
   password: string
-): Promise<users> => {
-  return userRepo.create({ id, name, password, isDeleted: false });
+) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const createUser = await userRepo.insertUser(id, name, password);
+    if (!createUser) {
+      return null;
+    } else {
+      return createUser;
+    }
+  } catch (error) {
+    throw error;
+  }
 };
 
-// Find user by ID
-export const findUserById = (id: number) => userRepo.findUserById(id);
+//login
+export const getUserDetail = async (id: number) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const loginUser = await userRepo.getUserDetail(id);
+    if (loginUser) {
+      return loginUser;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
 
-// Login user
-export const loginUser = (id: number | string) => userRepo.loginUser(id);
+//update user name and password
+export const updateUser = async (
+  id: number,
+  name: string,
+  password: string
+) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const updateUser = await userRepo.updateUser(id, name, password);
+    if (!updateUser) {
+      return null;
+    } else {
+      return updateUser;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
-// Hard delete
-export const deleteUserAccount = (id: number) => userRepo.deleteUser(id);
+//hard delete user
+export const deleteUser = async (id: number) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const deleteUser = await userRepo.deleteUser(id);
+    if (!deleteUser) {
+      return null;
+    } else {
+      return deleteUser;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
-// Soft delete
-export const softDeleteUserAccount = (id: number) =>
-  userRepo.softDeleteUser(id);
-
-// Update user details
-export const updateUserDetails = (id: number, name: string, password: string) =>
-  userRepo.updateUserDetails(id, name, password);
-
-// Check soft-deleted
-export const checkusersoftdeleted = (id: number | string) =>
-  userRepo.checkSoftDeletedUser(id);
-
-// Activate soft delete
-export const activatesoftdeleteuser = (id: number) =>
-  userRepo.activateSoftDeletedUser(id);
+//soft delete user
+export const softDeleteUser = async (id: number) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const deleteUser = await userRepo.softDeleteUser(id);
+    if (!deleteUser) {
+      return null;
+    } else {
+      return deleteUser;
+    }
+  } catch (error) {
+    throw error;
+  }
+};

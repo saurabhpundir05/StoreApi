@@ -1,24 +1,30 @@
-import { prisma } from "../models/prismaDbConnection";
+import { DiscountType, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { AddDTO, DiscountResponseDTO } from "../dtos/discountType.dto";
 
-export class DiscountValuesRepository extends BaseRepository<any> {
-  constructor() {
-    super(prisma.discountValues);
+export class DiscountValuesRepository extends BaseRepository<DiscountType> {
+  constructor(db: Prisma.TransactionClient) {
+    super(db, "discountValues");
   }
 
   //insert discount values
-  async insertDiscountValues(data: AddDTO): Promise<any> {
-    data.validate();
+  async insertDiscountValue(
+    d_id: number,
+    d_flat: number | null = null,
+    d_percent: number | null = null
+  ): Promise<number> {
+    if (d_flat != null && d_percent != null) {
+      throw new Error("Cannot have both d_flat and d_percent at the same time");
+    }
+    const discountValue = await this.model.create({
+      data: {
+        d_id,
+        d_flat: d_flat ?? null,
+        d_percent: d_percent ?? null,
+      },
+    });
 
-    const prismaData = {
-      d_id: data.d_id,
-      d_flat: data.d_flat ?? null,
-      d_percent: data.d_percent ?? null,
-    };
-
-    const discountType = await this.model.create({ data: prismaData });
-    return discountType;
+    return discountValue.dv_id;
   }
 
   //display all discount values
@@ -32,6 +38,16 @@ export class DiscountValuesRepository extends BaseRepository<any> {
           d_percent: d.d_percent,
         })
     );
+  }
+
+  //get a discount value
+  async getADiscountValue(d_id: number): Promise<number | null> {
+    const discount = await this.model.findUnique({
+      where: { d_id },
+      select: { d_percent: true, d_flat: true },
+    });
+    if (!discount) return null;
+    return discount.d_percent ?? discount.d_flat ?? null;
   }
 
   //update discount values d_percent or d_flat

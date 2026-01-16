@@ -11,5 +11,4 @@ function checkUser(req: any, res: Response, next: NextFunction) {
   }
   return next();
 }
-
 export default checkUser;

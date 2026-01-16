@@ -1,22 +1,22 @@
-import { users, Prisma } from "../generated/prisma/client";
+import { admin, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 
-export class UserRepository extends BaseRepository<users> {
+export class AdminRepository extends BaseRepository<admin> {
   constructor(db: Prisma.TransactionClient) {
-    super(db, "users");
+    super(db, "admin");
   }
 
-  //insertUser
-  async insertUser(id: number, name: string, password: string) {
+  //insert admin
+  async insertAdmin(id: number, name: string, password: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
       });
       if (!check) {
-        const insertUser = await this.model.create({
+        const insertAdmin = await this.model.create({
           data: { id, name, password, isDeleted: false },
         });
-        return insertUser.id;
+        return insertAdmin.id;
       } else {
         return null;
       }
@@ -25,15 +25,15 @@ export class UserRepository extends BaseRepository<users> {
     }
   }
 
-  //get user details
-  async getUserDetail(id: number) {
+  //get admin details
+  async getAdminDetail(id: number) {
     try {
-      const checkUserinDb = await this.model.findUnique({
+      const checkAdminInDb = await this.model.findUnique({
         where: { id },
         select: { id: true, name: true, password: true, isDeleted: true },
       });
-      if (checkUserinDb) {
-        return checkUserinDb;
+      if (checkAdminInDb) {
+        return checkAdminInDb;
       } else {
         return null;
       }
@@ -42,19 +42,19 @@ export class UserRepository extends BaseRepository<users> {
     }
   }
 
-  //update user - name password
-  async updateUser(id: number, name: string, password: string) {
+  //update admin - name password
+  async updateAdmin(id: number, name: string, password: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
       });
       if (check) {
-        const updateUser = await this.model.update({
+        const updateAdmin = await this.model.update({
           where: { id },
           data: { name, password },
           select: { id: true },
         });
-        return updateUser.id;
+        return updateAdmin.id;
       } else {
         return null;
       }
@@ -64,17 +64,17 @@ export class UserRepository extends BaseRepository<users> {
   }
 
   // Hard delete user
-  async deleteUser(id: number) {
+  async deleteAdmin(id: number) {
     try {
       const check = await this.model.findFirst({
         where: { id },
       });
       if (check) {
-        const deleteUser = await this.model.delete({
+        const deleteAdmin = await this.model.delete({
           where: { id },
           select: { id: true },
         });
-        return deleteUser.id;
+        return deleteAdmin.id;
       } else {
         return null;
       }
@@ -83,19 +83,19 @@ export class UserRepository extends BaseRepository<users> {
     }
   }
 
-  // Soft delete user
-  async softDeleteUser(id: number) {
+  // Soft delete admin
+  async softDeleteAdmin(id: number) {
     try {
       const check = await this.model.findFirst({
         where: { id, isDeleted: false },
       });
       if (check) {
-        const deleteUser = await this.model.update({
+        const softDeleteAdmin = await this.model.update({
           where: { id },
           data: { isDeleted: true },
           select: { id: true },
         });
-        return deleteUser.id;
+        return softDeleteAdmin.id;
       } else {
         return null;
       }

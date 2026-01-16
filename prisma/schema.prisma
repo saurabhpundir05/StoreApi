@@ -15,7 +15,7 @@ model Category {
 
 model Product {
   p_id      Int       @id @default(autoincrement())
-  p_name    String
+  p_name    String    @unique
   price     Decimal   @db.Decimal(10, 2)
   c_id      Int?
   category  Category? @relation(fields: [c_id], references: [c_id], onUpdate: Cascade, onDelete: Restrict)
@@ -51,15 +51,22 @@ model DiscountValues {
 }
 
 model users {
-  id        Int      @id
+  id        Int      @id @unique
   name      String   @db.VarChar(255)
   password  String   @db.VarChar(255)
   isDeleted Boolean? @default(false)
 }
+model admin{
+  id        Int      @id @unique
+  name      String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  isDeleted Boolean? @default(false)
+}
+
 model Cart {
   c_id      Int       @id @default(autoincrement())
   p_id      Int       @unique
-  p_name    String
+  p_name    String    @unique
   price     Decimal   @db.Decimal(10, 2)
   quantity  Int       
   d_type    String

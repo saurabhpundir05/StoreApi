@@ -7,10 +7,10 @@ import {
   DeleteDTO,
 } from "../dtos/product.dto";
 import {
-  addNewProduct,
+  insertProduct,
   getAllProductDetails,
   updateProduct,
-  deleteProductDetails,
+  deleteProduct,
 } from "../services/productServices";
 const router: Router = express.Router();
 
@@ -22,21 +22,25 @@ router.post(
     try {
       const inputData = new AddDTO(req.body);
       inputData.validate();
-      const result = await addNewProduct(
+      const categoryId = inputData.c_id ? Number(inputData.c_id) : null;
+      const result = await insertProduct(
         inputData.p_name,
         inputData.price,
-        Number(inputData.c_id)
+        categoryId
       );
+      if (!result) {
+        return res.status(409).json({ message: "Product already exists" });
+      }
       return res.status(201).json({
         message: "Product added successfully",
-        product_id: result.product_id,
+        product_id: result,
       });
     } catch (err: unknown) {
       console.error(err);
       if (err instanceof Error) {
         return res.status(400).json({ message: err.message });
       }
-      return res.status(400).json({ message: "Something went wrong" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
 );
@@ -73,7 +77,7 @@ router.patch(
       if (!result) {
         return res.status(404).json({ message: "Product not found" });
       }
-      return res.status(200).json(result);
+      return res.status(200).json({ message: "Product updated", p_id: result });
     } catch (err: unknown) {
       if (err instanceof Error)
         return res.status(400).json({ message: err.message });
@@ -90,11 +94,11 @@ router.delete(
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const result = await deleteProductDetails(inputData.p_id);
+      const result = await deleteProduct(inputData.p_id);
       if (!result) {
         return res.status(404).json({ message: "Product not found" });
       }
-      return res.status(200).json(result);
+      return res.status(200).json({ message: "Product deleted", p_id: result });
     } catch (err: unknown) {
       console.error(err);
       if (err instanceof Error)

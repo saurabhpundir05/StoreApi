@@ -1,9 +1,9 @@
 import express, { Router, Request, Response } from "express";
 import {
   insertDiscount,
-  deleteDiscount,
-  modifyDiscount,
   getAllDiscounts,
+  modifyDiscount,
+  deleteDiscount,
 } from "../services/discountServices";
 import {
   AddDTO,
@@ -26,7 +26,9 @@ router.post(
         discountData.p_id,
         discountData.d_type
       );
-      return res.status(200).json({ d_id: result });
+      return res
+        .status(200)
+        .json({ message: "Discount Added Successfully", d_id: result });
     } catch (err: unknown) {
       console.log(err);
       if (err instanceof Error)
@@ -36,28 +38,24 @@ router.post(
   }
 );
 
-//delete discount from a product
-router.delete(
-  "/deleteDiscounts",
+//Get all discounts
+router.get(
+  "/getAllDiscount",
   checkAuthUsingJwt,
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<Response> => {
     try {
-      const discountData = new DeleteDTO(req.body);
-      discountData.validate();
-      await deleteDiscount(discountData.d_id);
-      return res.status(200).json({ message: "Discount deleted successfully" });
+      const discountDTOs: DiscountResponseDTO[] = await getAllDiscounts();
+      return res.status(200).json(discountDTOs);
     } catch (err: unknown) {
-      console.log(err);
-      if (err instanceof Error)
-        return res.status(400).json({ message: err.message });
-      return res.status(400).json({ message: "Something went wrong" });
+      console.error(err);
+      return res.status(500).json({ message: "Database error" });
     }
   }
 );
 
 //modify discount on products
 router.patch(
-  "/modifyDiscounts",
+  "/modifyDiscount",
   checkAuthUsingJwt,
   async (req: Request, res: Response) => {
     try {
@@ -82,17 +80,21 @@ router.patch(
   }
 );
 
-//Get all discounts
-router.get(
-  "/getAllDiscount",
+//delete discount from a product
+router.delete(
+  "/deleteDiscount",
   checkAuthUsingJwt,
-  async (req: Request, res: Response): Promise<Response> => {
+  async (req: Request, res: Response) => {
     try {
-      const discountDTOs: DiscountResponseDTO[] = await getAllDiscounts();
-      return res.status(200).json(discountDTOs);
+      const discountData = new DeleteDTO(req.body);
+      discountData.validate();
+      await deleteDiscount(discountData.d_id);
+      return res.status(200).json({ message: "Discount deleted successfully" });
     } catch (err: unknown) {
-      console.error(err);
-      return res.status(500).json({ message: "Database error" });
+      console.log(err);
+      if (err instanceof Error)
+        return res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: "Something went wrong" });
     }
   }
 );
