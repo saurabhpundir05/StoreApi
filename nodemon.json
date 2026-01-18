@@ -1,0 +1,7 @@
+{
+  "watch": ["routes", "services", "dtos", "models", "server.ts"],
+  "ext": "ts,js,json",
+  "ignore": ["node_modules"],
+  "exec": "tsx server.ts",
+  "signal": "SIGTERM"
+}
