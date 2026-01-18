@@ -1,6 +1,9 @@
 import { prisma } from "../models/prismaDbConnection";
 import { UserRepository } from "../repositories/user.repository";
+<<<<<<< HEAD
 import { CartRepository } from "../repositories/cart.repository";
+=======
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 
 //signup
 export const createNewUser = async (
@@ -36,12 +39,15 @@ export const getUserDetail = async (id: number) => {
   }
 };
 
+<<<<<<< HEAD
 //get user cart history
 export const getAllUserDetails = async (id: number) => {
   const cartRepo = new CartRepository(prisma);
   return await cartRepo.getAllUserDetails(id);
 };
 
+=======
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 //update user name and password
 export const updateUser = async (
   id: number,

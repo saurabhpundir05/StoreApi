@@ -5,7 +5,11 @@ import { DiscountResponseDTO } from "../dtos/discount.dto";
 //add discount
 export const insertDiscount = async (
   p_id: number,
+<<<<<<< HEAD
   d_type?: "FLAT" | "PERCENT"
+=======
+  d_type: "FLAT" | "PERCENT"
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 ): Promise<number> => {
   const disRepo = new DiscountRepository(prisma);
   return await disRepo.insertDiscount(p_id, d_type);

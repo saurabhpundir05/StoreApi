@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import { Users, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 
 export class UserRepository extends BaseRepository<Users> {
+=======
+import { users, Prisma } from "../generated/prisma/client";
+import { BaseRepository } from "./base.repository";
+
+export class UserRepository extends BaseRepository<users> {
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
   constructor(db: Prisma.TransactionClient) {
     super(db, "users");
   }

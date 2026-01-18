@@ -16,10 +16,17 @@ router.post(
     try {
       const dto = new AddCartDTO(req.body);
       dto.validate();
+<<<<<<< HEAD
       const result = await addToCart(dto.id, dto.items);
       return res.status(200).json({
         success: true,
         message: "Added to cart",
+=======
+      const result = await addToCart(dto.items);
+      return res.status(200).json({
+        success: true,
+        message: "Cart updated successfully",
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
         data: result,
       });
     } catch (err: unknown) {

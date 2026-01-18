@@ -7,9 +7,13 @@ import {
   deleteUser,
   softDeleteUser,
 } from "../services/userServices";
+<<<<<<< HEAD
 import { getAllUserDetails } from "../services/userServices";
 import { SignupDTO, LoginDTO } from "../dtos/user.dto";
 import { CartResponseDTO } from "../dtos/cart.dto";
+=======
+import { SignupDTO, LoginDTO } from "../dtos/user.dto";
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 import { generateToken } from "../helpers/jwtToken";
 import checkAuthUsingJwt from "../middleware/checkAuth";
 import checkUser from "../middleware/checkTrueUser";
@@ -76,6 +80,7 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+<<<<<<< HEAD
 //get shopping history
 router.get(
   "/getUserCartHistory/:id",
@@ -95,6 +100,8 @@ router.get(
   }
 );
 
+=======
+>>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 //update password and name
 router.patch(
   "/updateUserDetails",
