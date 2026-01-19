@@ -1,17 +1,11 @@
 import { prisma } from "../models/prismaDbConnection";
 import { CartRepository } from "../repositories/cart.repository";
-<<<<<<< HEAD
 import { CartItemInput } from "../dtos/cart.dto";
-=======
-import { CartItemInput, CartResponseDTO } from "../dtos/cart.dto";
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 import { UnitOfWork } from "../repositories/unitofwork";
 import { ProductRepository } from "../repositories/product.repository";
 import { StockRepository } from "../repositories/stock.repository";
 import { DiscountRepository } from "../repositories/discount.repository";
 import { DiscountValuesRepository } from "../repositories/discount.type.repository";
-<<<<<<< HEAD
-import { UserRepository } from "../repositories/user.repository";
 const uow = new UnitOfWork();
 
 //add to cart
@@ -19,12 +13,6 @@ export const addToCart = async (
   id: number,
   items: CartItemInput[]
 ): Promise<any[]> => {
-=======
-const uow = new UnitOfWork();
-
-//add to cart
-export const addToCart = async (items: CartItemInput[]): Promise<any[]> => {
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
   return await uow.execute(async (repo) => {
     const response: any[] = [];
     for (const item of items) {
@@ -42,19 +30,15 @@ export const addToCart = async (items: CartItemInput[]): Promise<any[]> => {
       //update stock
       await stockRepo.updateStockQuantity(product.p_id, stock - item.quantity);
 
-<<<<<<< HEAD
       // value assign
       let d_type = "NO DISCOUNT";
       let d_value = 0;
       const price = Number(product.price);
       let t_price = price * item.quantity;
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
       //calculate discount
       //find discount
       const disRepo = new DiscountRepository(prisma);
       const discount = await disRepo.getADiscount(product.p_id);
-<<<<<<< HEAD
       if (discount) {
         //find discount value
         const disvRepo = new DiscountValuesRepository(prisma);
@@ -74,30 +58,6 @@ export const addToCart = async (items: CartItemInput[]): Promise<any[]> => {
       const cartRepo = new CartRepository(prisma);
       await cartRepo.insertData(
         Number(id),
-=======
-      //find discount value
-      const disvRepo = new DiscountValuesRepository(prisma);
-      const discountValue = await disvRepo.getADiscountValue(discount.d_id);
-
-      let d_type = "NO DISCOUNT";
-      let d_value = 0;
-      const price = Number(product.price);
-
-      if (discount.d_type) {
-        d_type = discount.d_type;
-        if (d_type === "FLAT") d_value = Number(discountValue);
-        if (d_type === "PERCENT") d_value = Number(discountValue);
-      }
-
-      let t_price = price * item.quantity;
-      if (d_type === "FLAT") t_price -= d_value;
-      if (d_type === "PERCENT") t_price -= (t_price * d_value) / 100;
-      if (t_price < 0) t_price = 0;
-
-      //insert data to cart
-      const cartRepo = new CartRepository(prisma);
-      await cartRepo.insertData(
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
         product.p_id,
         product.p_name,
         Number(product.price),

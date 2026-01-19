@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 import { Admin, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 
 export class AdminRepository extends BaseRepository<Admin> {
-=======
-import { admin, Prisma } from "../generated/prisma/client";
-import { BaseRepository } from "./base.repository";
-
-export class AdminRepository extends BaseRepository<admin> {
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
   constructor(db: Prisma.TransactionClient) {
     super(db, "admin");
   }

@@ -31,9 +31,5 @@ export class UnitOfWork {
 // Automatic Commit: If the work function finishes successfully
 // (the Promise resolves), Prisma automatically commits the transaction to the database.
 
-<<<<<<< HEAD
 // Automatic Rollback: If any error is thrown inside the work function (e.g., throw new Error()),
-=======
-// Automatic Rollback: If any error is thrown inside the work function (e.g throw new Error()),
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 // Prisma catches it and automatically rolls back all changes made during that transaction.

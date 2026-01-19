@@ -9,10 +9,7 @@ export class CartRepository extends BaseRepository<Cart> {
 
   //insert into cart
   async insertData(
-<<<<<<< HEAD
     id: number,
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
     p_id: number,
     p_name: string,
     price: number,
@@ -23,10 +20,7 @@ export class CartRepository extends BaseRepository<Cart> {
   ) {
     return await this.model.create({
       data: {
-<<<<<<< HEAD
         id,
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
         p_id,
         p_name,
         price,
@@ -45,10 +39,7 @@ export class CartRepository extends BaseRepository<Cart> {
       (c) =>
         new CartResponseDTO({
           c_id: c.c_id,
-<<<<<<< HEAD
           id: c.id,
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
           p_id: c.p_id,
           p_name: c.p_name,
           price: c.price,
@@ -56,7 +47,6 @@ export class CartRepository extends BaseRepository<Cart> {
           d_type: c.d_type,
           d_value: c.d_value,
           t_price: c.t_price,
-<<<<<<< HEAD
           createdAt: c.createdAt,
         })
     );
@@ -81,8 +71,6 @@ export class CartRepository extends BaseRepository<Cart> {
           d_value: c.d_value,
           t_price: c.t_price,
           createdAt: c.createdAt,
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
         })
     );
   }
