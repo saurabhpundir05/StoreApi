@@ -1,15 +1,15 @@
 {
-  "name": "api12jan2026",
+  "name": "storeapi",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "this is a storeapi",
+  "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "start": "tsx server.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "saurabh",
   "license": "ISC",
   "type": "module",
   "devDependencies": {

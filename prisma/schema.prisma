@@ -38,11 +38,8 @@ enum DiscountType {
 model Discount {
   d_id      Int          @id @default(autoincrement())
   p_id      Int          @unique
-<<<<<<< HEAD
   d_type    DiscountType 
-=======
   d_type    DiscountType
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
   product   Product      @relation(fields: [p_id], references: [p_id], onUpdate: Cascade, onDelete: Cascade)
   discountValues DiscountValues?
 }
@@ -54,49 +51,38 @@ model DiscountValues {
   discount   Discount  @relation(fields: [d_id], references: [d_id], onUpdate: Cascade, onDelete: Cascade)
 }
 
-<<<<<<< HEAD
 model Users {
-=======
-model users {
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
-  id        Int      @id @unique
+  id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
   password  String   @db.VarChar(255)
   isDeleted Boolean? @default(false)
-<<<<<<< HEAD
+  tokenId   String   @db.VarChar(255)
   cart Cart[]
 }
 
-model Admin {
-=======
-}
-model admin{
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
-  id        Int      @id @unique
+model Admin{
+  id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
   password  String   @db.VarChar(255)
   isDeleted Boolean? @default(false)
+  tokenId   String   @db.VarChar(255)
 }
 
 model Cart {
   c_id      Int       @id @default(autoincrement())
-<<<<<<< HEAD
   id        Int
   Users     Users     @relation(fields: [id],references: [id])
   p_id      Int       
   p_name    String    
-=======
   p_id      Int       @unique
   p_name    String    @unique
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
   price     Decimal   @db.Decimal(10, 2)
   quantity  Int       
   d_type    String
   d_value   Decimal    @db.Decimal(10,2)
-  t_price   Decimal   @db.Decimal(10, 2)
-<<<<<<< HEAD
+  t_price   Decimal    @db.Decimal(10, 2)
+  d_price   Decima     @db.Decimal(10,2)
   createdAt DateTime  @default(now())
 }
-=======
-}
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
