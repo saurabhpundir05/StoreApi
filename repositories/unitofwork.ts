@@ -1,7 +1,11 @@
+//#region imports
 import { prisma } from "../models/prismaDbConnection";
 import { UserRepository } from "./user.repository";
 import { ProductRepository } from "./product.repository";
 import { StockRepository } from "./stock.repository";
+//#endregion
+
+//#region Unit Of Work
 
 // In Prisma, we don't manually call commit or rollback.
 // Instead, Prisma uses a callback-based transaction system.
@@ -11,7 +15,7 @@ export class UnitOfWork {
       users: UserRepository;
       products: ProductRepository;
       stocks: StockRepository;
-    }) => Promise<T>
+    }) => Promise<T>,
   ): Promise<T> {
     try {
       return await prisma.$transaction(async (tx) => {
@@ -33,3 +37,4 @@ export class UnitOfWork {
 
 // Automatic Rollback: If any error is thrown inside the work function (e.g., throw new Error()),
 // Prisma catches it and automatically rolls back all changes made during that transaction.
+//#endregion

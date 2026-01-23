@@ -1,6 +1,11 @@
+//#region imports
 import { Discount, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { DiscountResponseDTO } from "../dtos/discount.dto";
+import { DiscountType } from "../generated/prisma/client";
+//#endregion
+
+//#region Discount Repository
 
 export class DiscountRepository extends BaseRepository<Discount> {
   constructor(db: Prisma.TransactionClient) {
@@ -8,10 +13,7 @@ export class DiscountRepository extends BaseRepository<Discount> {
   }
 
   //insert discount
-  async insertDiscount(
-    p_id: number,
-    d_type: "FLAT" | "PERCENT"
-  ): Promise<number> {
+  async insertDiscount(p_id: number, d_type: DiscountType): Promise<number> {
     const discount = await this.model.create({
       data: { p_id, d_type },
     });
@@ -27,7 +29,7 @@ export class DiscountRepository extends BaseRepository<Discount> {
           d_id: d.d_id,
           p_id: d.p_id,
           d_type: d.d_type,
-        })
+        }),
     );
   }
 
@@ -42,7 +44,7 @@ export class DiscountRepository extends BaseRepository<Discount> {
   //update discount d_type
   async modifyDiscount(
     d_id: number,
-    d_type: "FLAT" | "PERCENT"
+    d_type: DiscountType,
   ): Promise<{ message: string; d_id: number } | null> {
     const result = await this.model.updateMany({
       where: { d_id },
@@ -61,3 +63,4 @@ export class DiscountRepository extends BaseRepository<Discount> {
     }
   }
 }
+//#endregion

@@ -1,5 +1,9 @@
+//#region imports
 import { Admin, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
+//#endregion
+
+//#region admin repository
 
 export class AdminRepository extends BaseRepository<Admin> {
   constructor(db: Prisma.TransactionClient) {
@@ -7,14 +11,14 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   //insert admin
-  async insertAdmin(id: number, name: string, password: string) {
+  async insertAdmin(email: string, name: string, password: string) {
     try {
       const check = await this.model.findFirst({
-        where: { id },
+        where: { email },
       });
       if (!check) {
         const insertAdmin = await this.model.create({
-          data: { id, name, password, isDeleted: false },
+          data: { email, name, password, isDeleted: false },
         });
         return insertAdmin.id;
       } else {
@@ -26,7 +30,24 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   //get admin details
-  async getAdminDetail(id: number) {
+  async getAdminDetail(email: string) {
+    try {
+      const checkAdminInDb = await this.model.findUnique({
+        where: { email },
+        select: { id: true, name: true, password: true, isDeleted: true },
+      });
+      if (checkAdminInDb) {
+        return checkAdminInDb;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //get admin details by id
+  async getAdminDetailById(id: number) {
     try {
       const checkAdminInDb = await this.model.findUnique({
         where: { id },
@@ -41,9 +62,8 @@ export class AdminRepository extends BaseRepository<Admin> {
       throw err;
     }
   }
-
   //update admin - name password
-  async updateAdmin(id: number, name: string, password: string) {
+  async updateAdmin(id: number, email: string, name: string, password: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
@@ -51,7 +71,7 @@ export class AdminRepository extends BaseRepository<Admin> {
       if (check) {
         const updateAdmin = await this.model.update({
           where: { id },
-          data: { name, password },
+          data: { name, email, password },
           select: { id: true },
         });
         return updateAdmin.id;
@@ -104,3 +124,4 @@ export class AdminRepository extends BaseRepository<Admin> {
     }
   }
 }
+//#endregion

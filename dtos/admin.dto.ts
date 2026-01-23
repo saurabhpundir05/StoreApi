@@ -1,40 +1,93 @@
 // DTO for Admin Signup
 export class SignupDTO {
-  id: string | number;
+  email: string;
   name: string;
   password: string;
 
   constructor({
-    id,
+    email,
     name,
     password,
   }: {
-    id: string | number;
+    email: string;
     name: string;
     password: string;
   }) {
-    this.id = id;
+    this.email = email;
     this.name = name;
     this.password = password;
   }
 
   // validate if all fields required and correct
   validate() {
-    if (!this.id || !this.name || !this.password) {
-      throw new Error("Username, password, and name are required");
+    if (!this.email || !this.name || !this.password) {
+      throw new Error("Email, password, and name are required");
     }
-    if (this.password.length < 3) {
-      throw new Error("Password must be at least 3 characters");
+    if (this.password.length < 8) {
+      throw new Error("Password must be at least 8 characters");
     }
   }
 }
 
-// DTO for Admin Login and delete
+// DTO for Admin Login
 export class LoginDTO {
-  id: string | number;
+  email: string;
   password: string;
 
-  constructor({ id, password }: { id: string | number; password: string }) {
+  constructor({ email, password }: { email: string; password: string }) {
+    this.email = email;
+    this.password = password;
+  }
+
+  // validate if all fields input
+  validate() {
+    if (!this.email || !this.password) {
+      throw new Error("Email and password are required");
+    }
+  }
+}
+
+// DTO for Admin Update
+export class UpdateDTO {
+  id: number;
+  email: string;
+  name: string;
+  password: string;
+
+  constructor({
+    id,
+    email,
+    name,
+    password,
+  }: {
+    id: number;
+    email: string;
+    name: string;
+    password: string;
+  }) {
+    this.id = id;
+    this.email = email;
+    this.name = name;
+    this.password = password;
+  }
+
+  // validate if all fields required and correct
+  validate() {
+    if (!this.id || !this.email || !this.name || !this.password) {
+      throw new Error("Id, Email, password, and name are required");
+    }
+    if (this.password.length < 8) {
+      throw new Error("Password must be at least 8 characters");
+    }
+  }
+}
+
+// DTO for Admin Delete
+export class DeleteDTO {
+  id: number;
+  password: string;
+
+  constructor({ id, password }: { id: number; password: string }) {
     this.id = id;
     this.password = password;
   }
@@ -42,7 +95,7 @@ export class LoginDTO {
   // validate if all fields input
   validate() {
     if (!this.id || !this.password) {
-      throw new Error("Username and password are required");
+      throw new Error("Id and password are required");
     }
   }
 }

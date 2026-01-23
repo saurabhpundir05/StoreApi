@@ -1,19 +1,20 @@
+//#region imports
 import { prisma } from "../models/prismaDbConnection";
 import { UserRepository } from "../repositories/user.repository";
-<<<<<<< HEAD
 import { CartRepository } from "../repositories/cart.repository";
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
+//#endregion
+
+//#region User Services
 
 //signup
 export const createNewUser = async (
-  id: number,
   name: string,
-  password: string
+  email: string,
+  password: string,
 ) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const createUser = await userRepo.insertUser(id, name, password);
+    const createUser = await userRepo.insertUser(name, email, password);
     if (!createUser) {
       return null;
     } else {
@@ -24,11 +25,30 @@ export const createNewUser = async (
   }
 };
 
-//login
-export const getUserDetail = async (id: number) => {
+//signup using Google OAuth
+export const createNewUserOAuth = async (
+  name: string,
+  email: string,
+  TokenId: string,
+) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const loginUser = await userRepo.getUserDetail(id);
+    const createUser = await userRepo.insertUserOAuth(name, email, TokenId);
+    if (!createUser) {
+      return null;
+    } else {
+      return createUser;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+//Get user details by email
+export const getUserDetail = async (email: string) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const loginUser = await userRepo.getUserDetail(email);
     if (loginUser) {
       return loginUser;
     } else {
@@ -39,24 +59,63 @@ export const getUserDetail = async (id: number) => {
   }
 };
 
-<<<<<<< HEAD
+//get user details by Id
+export const getUserDetailById = async (id: number) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const loginUser = await userRepo.getUserDetailById(id);
+    if (loginUser) {
+      return loginUser;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+//check email if exist or not
+export const checkUserEmail = async (email: string) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const loginUser = await userRepo.checkUserEmail(email);
+    if (loginUser) {
+      return loginUser;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+//get UserDetail by GoogleID
+export const getUserDetailByGoogleId = async (TokenId: string) => {
+  const userRepo = new UserRepository(prisma);
+  try {
+    const getUserDetailByGoogleId = await userRepo.getUserByGoogleID(TokenId);
+    return getUserDetailByGoogleId;
+  } catch (err) {
+    throw err;
+  }
+};
+
 //get user cart history
 export const getAllUserDetails = async (id: number) => {
   const cartRepo = new CartRepository(prisma);
   return await cartRepo.getAllUserDetails(id);
 };
 
-=======
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
 //update user name and password
 export const updateUser = async (
   id: number,
   name: string,
-  password: string
+  email: string,
+  password: string,
 ) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const updateUser = await userRepo.updateUser(id, name, password);
+    const updateUser = await userRepo.updateUser(id, name, email, password);
     if (!updateUser) {
       return null;
     } else {
@@ -96,3 +155,4 @@ export const softDeleteUser = async (id: number) => {
     throw error;
   }
 };
+//#endregion

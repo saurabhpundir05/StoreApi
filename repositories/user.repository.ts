@@ -1,27 +1,29 @@
-<<<<<<< HEAD
+//#region imports
 import { Users, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
+//#endregion
+
+//#region User Repository
 
 export class UserRepository extends BaseRepository<Users> {
-=======
-import { users, Prisma } from "../generated/prisma/client";
-import { BaseRepository } from "./base.repository";
-
-export class UserRepository extends BaseRepository<users> {
->>>>>>> 6d59a2926b1398f735eb5d8c6a583c7a45495553
   constructor(db: Prisma.TransactionClient) {
     super(db, "users");
   }
 
   //insertUser
-  async insertUser(id: number, name: string, password: string) {
+  async insertUser(name: string, email: string, password: string) {
     try {
       const check = await this.model.findFirst({
-        where: { id },
+        where: { email },
       });
       if (!check) {
         const insertUser = await this.model.create({
-          data: { id, name, password, isDeleted: false },
+          data: {
+            name,
+            email,
+            password,
+            isDeleted: false,
+          },
         });
         return insertUser.id;
       } else {
@@ -32,12 +34,42 @@ export class UserRepository extends BaseRepository<users> {
     }
   }
 
-  //get user details
-  async getUserDetail(id: number) {
+  //inser user for OAuth
+  async insertUserOAuth(name: string, email: string, TokenId: string) {
+    try {
+      const check = await this.model.findFirst({
+        where: { TokenId },
+      });
+      if (!check) {
+        const insertUser = await this.model.create({
+          data: {
+            name,
+            email,
+            TokenId,
+            isDeleted: false,
+          },
+        });
+        return insertUser.id;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //get user details by email
+  async getUserDetail(email: string) {
     try {
       const checkUserinDb = await this.model.findUnique({
-        where: { id },
-        select: { id: true, name: true, password: true, isDeleted: true },
+        where: { email },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          password: true,
+          isDeleted: true,
+        },
       });
       if (checkUserinDb) {
         return checkUserinDb;
@@ -49,8 +81,66 @@ export class UserRepository extends BaseRepository<users> {
     }
   }
 
+  //get user detail by id getUserDetailById
+  async getUserDetailById(id: number) {
+    try {
+      const checkUserinDb = await this.model.findUnique({
+        where: { id },
+        select: {
+          name: true,
+          password: true,
+          isDeleted: true,
+        },
+      });
+      if (checkUserinDb) {
+        return checkUserinDb;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //check email already exist in db or not
+  async checkUserEmail(email: string) {
+    try {
+      const checkUserinDb = await this.model.findUnique({
+        where: { email },
+        select: {
+          email: true,
+        },
+      });
+      if (checkUserinDb) {
+        return checkUserinDb;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //get user details
+  async getUserByGoogleID(TokenId: string) {
+    try {
+      const checkUserinDb = await this.model.findUnique({
+        where: { TokenId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          isDeleted: true,
+        },
+      });
+      return checkUserinDb;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   //update user - name password
-  async updateUser(id: number, name: string, password: string) {
+  async updateUser(id: number, name: string, email: string, password: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
@@ -58,7 +148,7 @@ export class UserRepository extends BaseRepository<users> {
       if (check) {
         const updateUser = await this.model.update({
           where: { id },
-          data: { name, password },
+          data: { name, email, password },
           select: { id: true },
         });
         return updateUser.id;
@@ -111,3 +201,4 @@ export class UserRepository extends BaseRepository<users> {
     }
   }
 }
+//#endregion

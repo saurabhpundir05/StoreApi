@@ -1,11 +1,12 @@
+import { DiscountType } from "../generated/prisma/client";
 // DTO for Adding Discount
 export interface AddDiscountInput {
   p_id: number;
-  d_type: "FLAT" | "PERCENT";
+  d_type: DiscountType;
 }
 export class AddDTO {
   p_id: number;
-  d_type: "FLAT" | "PERCENT";
+  d_type: DiscountType;
   constructor({ p_id, d_type }: AddDiscountInput) {
     this.p_id = p_id;
     this.d_type = d_type;
@@ -36,11 +37,11 @@ export class DeleteDTO {
 // DTO for Updating Discount
 export interface UpdateDiscountInput {
   d_id: number;
-  d_type: "FLAT" | "PERCENT";
+  d_type: DiscountType;
 }
 export class UpdateDiscountDTO {
   d_id: number;
-  d_type: "FLAT" | "PERCENT";
+  d_type: DiscountType;
 
   constructor({ d_id, d_type }: UpdateDiscountInput) {
     this.d_id = d_id;

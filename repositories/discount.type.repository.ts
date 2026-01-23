@@ -1,6 +1,10 @@
+//#region imports
 import { DiscountType, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { AddDTO, DiscountResponseDTO } from "../dtos/discountType.dto";
+//#endregion
+
+//#region DiscountType Repository
 
 export class DiscountValuesRepository extends BaseRepository<DiscountType> {
   constructor(db: Prisma.TransactionClient) {
@@ -11,7 +15,7 @@ export class DiscountValuesRepository extends BaseRepository<DiscountType> {
   async insertDiscountValue(
     d_id: number,
     d_flat: number | null = null,
-    d_percent: number | null = null
+    d_percent: number | null = null,
   ): Promise<number> {
     if (d_flat != null && d_percent != null) {
       throw new Error("Cannot have both d_flat and d_percent at the same time");
@@ -36,7 +40,7 @@ export class DiscountValuesRepository extends BaseRepository<DiscountType> {
           d_id: d.d_id,
           d_flat: d.d_flat,
           d_percent: d.d_percent,
-        })
+        }),
     );
   }
 
@@ -60,3 +64,4 @@ export class DiscountValuesRepository extends BaseRepository<DiscountType> {
     return updated;
   }
 }
+//#endregion

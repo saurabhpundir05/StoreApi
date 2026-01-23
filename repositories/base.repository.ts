@@ -1,4 +1,9 @@
+//#region imports
 import { Prisma } from "../generated/prisma/client";
+//#endregion
+
+//#region Base Repository
+
 // Define a generic base repository class that can handle CRUD operations for any type T
 export class BaseRepository<T> {
   constructor(
@@ -6,7 +11,7 @@ export class BaseRepository<T> {
     protected readonly db: Prisma.TransactionClient,
     // The name of the model (table) this repository works with, e.g., 'user', 'product'.
     // Uncapitalize ensures the first letter is lowercase
-    protected readonly modelName: Uncapitalize<Prisma.ModelName>
+    protected readonly modelName: Uncapitalize<Prisma.ModelName>,
   ) {}
 
   // A getter to dynamically access the Prisma model based on modelName
@@ -35,3 +40,4 @@ export class BaseRepository<T> {
     return this.model.delete({ where: { id } });
   }
 }
+//#endregion

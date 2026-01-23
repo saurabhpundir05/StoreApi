@@ -1,6 +1,10 @@
+//#region imports
 import { Product, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { ProductResponseDTO } from "../dtos/product.dto";
+//#endregion
+
+//#region Product Repository
 
 // Define a repository specifically for the Product model
 // It extends BaseRepository with the generic type T = Product
@@ -17,7 +21,7 @@ export class ProductRepository extends BaseRepository<Product> {
   async insertProduct(
     p_name: string,
     price: number,
-    c_id: number | null = null
+    c_id: number | null = null,
   ) {
     try {
       const existingProduct = await this.model.findFirst({
@@ -46,7 +50,7 @@ export class ProductRepository extends BaseRepository<Product> {
             p_name: p.p_name,
             price: p.price,
             c_id: p.c_id ?? null,
-          })
+          }),
       );
     } catch (err) {
       throw err;
@@ -71,7 +75,7 @@ export class ProductRepository extends BaseRepository<Product> {
     p_id: number,
     p_name: string,
     price: number,
-    c_id: number | null = null
+    c_id: number | null = null,
   ): Promise<number | null> {
     try {
       const updatedProduct = await this.model.update({
@@ -98,3 +102,4 @@ export class ProductRepository extends BaseRepository<Product> {
     }
   }
 }
+//#endregion

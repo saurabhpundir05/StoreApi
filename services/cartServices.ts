@@ -1,3 +1,4 @@
+//#region imports
 import { prisma } from "../models/prismaDbConnection";
 import { CartRepository } from "../repositories/cart.repository";
 import { CartItemInput } from "../dtos/cart.dto";
@@ -7,11 +8,16 @@ import { StockRepository } from "../repositories/stock.repository";
 import { DiscountRepository } from "../repositories/discount.repository";
 import { DiscountValuesRepository } from "../repositories/discount.type.repository";
 const uow = new UnitOfWork();
+//#endregion
 
-//add to cart
+//#region Services
+
+// add to cart -> the cart is inserted with cart data -> cartid, userid, product name, quantity
+// product price, discount type on product, discount value for discount type, total price (without discount)
+// and discounted price and final price.
 export const addToCart = async (
   id: number,
-  items: CartItemInput[]
+  items: CartItemInput[],
 ): Promise<any[]> => {
   return await uow.execute(async (repo) => {
     const response: any[] = [];
@@ -35,6 +41,7 @@ export const addToCart = async (
       let d_value = 0;
       const price = Number(product.price);
       let t_price = price * item.quantity;
+      let d_price = 0;
       //calculate discount
       //find discount
       const disRepo = new DiscountRepository(prisma);
@@ -49,9 +56,10 @@ export const addToCart = async (
             d_value = item.quantity * Number(discountValue);
           if (d_type === "PERCENT") d_value = Number(discountValue);
         }
-        if (d_type === "FLAT") t_price -= d_value;
-        if (d_type === "PERCENT") t_price -= (t_price * d_value) / 100;
-        if (t_price < 0) t_price = 0;
+        if (d_type === "FLAT") d_price = t_price - d_value;
+        if (d_type === "PERCENT") d_price = t_price - (t_price * d_value) / 100;
+        if (d_price < 0) d_price = 0;
+        if (d_price === 0) d_price = t_price;
       }
 
       //insert data to cart
@@ -64,21 +72,26 @@ export const addToCart = async (
         item.quantity,
         d_type,
         d_value,
-        t_price
+        t_price,
+        d_price,
       );
     }
     return response;
   });
 };
 
-//get all cart details
+// get all cart details -> cartid, userid, product name, quantity
+// product price, discount type on product, discount value for discount type, total price (without discount)
+// and discounted price and final price.
 export const getAllDetails = async () => {
   const cartRepo = new CartRepository(prisma);
   return await cartRepo.getAllDetails();
 };
 
-//delete all cart details
+//delete all cart details -> turncate whole cart table
 export const deleteAllRecords = async () => {
   const cartRepo = new CartRepository(prisma);
   return await cartRepo.deleteAllRecords();
 };
+
+//#endregion

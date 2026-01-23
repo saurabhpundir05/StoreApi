@@ -1,4 +1,8 @@
+//#region imports
 import { Request, Response, NextFunction } from "express";
+//#endregion
+
+//#region CheckTrueUser
 
 function checkUser(req: any, res: Response, next: NextFunction) {
   const authUser = req.user;
@@ -7,8 +11,11 @@ function checkUser(req: any, res: Response, next: NextFunction) {
     return res.status(400).json({ message: "Invalid user data" });
   }
   if (String(authUser.id) !== String(id)) {
-    return res.status(403).json({ message: "Can't delete other user data" });
+    return res
+      .status(403)
+      .json({ message: "Can't access other user services" });
   }
   return next();
 }
 export default checkUser;
+//#endregion

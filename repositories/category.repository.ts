@@ -1,6 +1,10 @@
+//#region imports
 import { Category, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { CategoryResponseDTO } from "../dtos/category.dto";
+//#endregion
+
+//#region Category Repository
 
 export class CategoryRepository extends BaseRepository<Category> {
   constructor(db: Prisma.TransactionClient) {
@@ -34,7 +38,7 @@ export class CategoryRepository extends BaseRepository<Category> {
           new CategoryResponseDTO({
             c_id: c.c_id,
             c_name: c.c_name,
-          })
+          }),
       );
     } catch (err) {
       throw err;
@@ -68,3 +72,4 @@ export class CategoryRepository extends BaseRepository<Category> {
     }
   }
 }
+//#endregion

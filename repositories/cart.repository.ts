@@ -1,6 +1,10 @@
+//#region imports
 import { Cart, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { CartResponseDTO } from "../dtos/cart.dto";
+//#endregion
+
+//#region Cart Repository
 
 export class CartRepository extends BaseRepository<Cart> {
   constructor(db: Prisma.TransactionClient) {
@@ -16,7 +20,8 @@ export class CartRepository extends BaseRepository<Cart> {
     quantity: number,
     d_type: string,
     d_value: number,
-    t_price: number
+    t_price: number,
+    d_price: number,
   ) {
     return await this.model.create({
       data: {
@@ -28,6 +33,7 @@ export class CartRepository extends BaseRepository<Cart> {
         d_type,
         d_value,
         t_price,
+        d_price,
       },
     });
   }
@@ -47,8 +53,9 @@ export class CartRepository extends BaseRepository<Cart> {
           d_type: c.d_type,
           d_value: c.d_value,
           t_price: c.t_price,
+          d_price: c.d_price,
           createdAt: c.createdAt,
-        })
+        }),
     );
   }
 
@@ -70,8 +77,9 @@ export class CartRepository extends BaseRepository<Cart> {
           d_type: c.d_type,
           d_value: c.d_value,
           t_price: c.t_price,
+          d_price: c.d_price,
           createdAt: c.createdAt,
-        })
+        }),
     );
   }
 
@@ -80,3 +88,4 @@ export class CartRepository extends BaseRepository<Cart> {
     return this.model.deleteMany({});
   }
 }
+//#endregion

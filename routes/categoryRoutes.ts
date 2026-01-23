@@ -1,5 +1,7 @@
+//#region imports
 import express, { Router, Request, Response } from "express";
 import checkAuthUsingJwt from "../middleware/checkAuth";
+import { authorizeRole } from "../middleware/authorizeRole";
 import {
   AddDTO,
   DeleteDTO,
@@ -12,12 +14,86 @@ import {
   updateCategory,
   deleteCategory,
 } from "../services/categoryServices";
+//#endregion
+
+//#region Api's
+
 const router: Router = express.Router();
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     AddCategory:
+ *       type: object
+ *       required:
+ *         - c_name
+ *       properties:
+ *         c_name:
+ *           type: string
+ *           example: Electronics
+ *
+ *     UpdateCategory:
+ *       type: object
+ *       required:
+ *         - c_id
+ *         - c_name
+ *       properties:
+ *         c_id:
+ *           type: number
+ *           example: 1
+ *         c_name:
+ *           type: string
+ *           example: Home Appliances
+ *
+ *     DeleteCategory:
+ *       type: object
+ *       required:
+ *         - c_id
+ *       properties:
+ *         c_id:
+ *           type: number
+ *           example: 1
+ *
+ *     CategoryResponse:
+ *       type: object
+ *       properties:
+ *         c_id:
+ *           type: number
+ *           example: 1
+ *         c_name:
+ *           type: string
+ *           example: Electronics
+ */
+
+/**
+ * @swagger
+ * /addCategory:
+ *   post:
+ *     summary: Add a new category
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AddCategory'
+ *     responses:
+ *       201:
+ *         description: Category inserted successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
 
 //add new category
 router.post(
   "/addCategory",
   checkAuthUsingJwt,
+  authorizeRole("admin"),
   async (req: Request, res: Response) => {
     try {
       const categoryData = new AddDTO(req.body);
@@ -30,8 +106,31 @@ router.post(
         return res.status(400).json({ message: err.message });
       return res.status(400).json({ message: "Something went wrong" });
     }
-  }
+  },
 );
+
+/**
+ * @swagger
+ * /getAllCategories:
+ *   get:
+ *     summary: Get all categories
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/CategoryResponse'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Database error
+ */
 
 //view all category
 router.get(
@@ -45,20 +144,46 @@ router.get(
       console.error(err);
       return res.status(500).json({ message: "Database error" });
     }
-  }
+  },
 );
 
-//modiy a category
+/**
+ * @swagger
+ * /updateCategory:
+ *   patch:
+ *     summary: Update an existing category
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateCategory'
+ *     responses:
+ *       200:
+ *         description: Category updated successfully
+ *       404:
+ *         description: Category not found
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
+
+//modify a category
 router.patch(
   "/updateCategory",
   checkAuthUsingJwt,
+  authorizeRole("admin"),
   async (req: Request, res: Response) => {
     try {
       const categoryData = new UpdateDTO(req.body);
       categoryData.validate();
       const result = await updateCategory(
         categoryData.c_id,
-        categoryData.c_name
+        categoryData.c_name,
       );
       if (!result) {
         return res.status(404).json({ message: "Category not found" });
@@ -74,13 +199,39 @@ router.patch(
       }
       return res.status(500).json({ message: "Internal server error" });
     }
-  }
+  },
 );
+
+/**
+ * @swagger
+ * /deleteCategory:
+ *   delete:
+ *     summary: Delete a category
+ *     tags: [Category]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/DeleteCategory'
+ *     responses:
+ *       200:
+ *         description: Category deleted successfully
+ *       404:
+ *         description: Category not found
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
 
 //delete a category
 router.delete(
   "/deleteCategory",
   checkAuthUsingJwt,
+  authorizeRole("admin"),
   async (req: Request, res: Response) => {
     try {
       const categoryData = new DeleteDTO(req.body);
@@ -100,7 +251,8 @@ router.delete(
       }
       return res.status(500).json({ message: "Internal server error" });
     }
-  }
+  },
 );
 
 export default router;
+//#endregion

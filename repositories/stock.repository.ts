@@ -1,7 +1,10 @@
+//#region imports
 import { Stock, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
 import { StockResponseDTO } from "../dtos/stock.dto";
+//#endregion
 
+//#region Stock Repository
 export class StockRepository extends BaseRepository<Stock> {
   constructor(db: Prisma.TransactionClient) {
     super(db, "stock");
@@ -33,7 +36,7 @@ export class StockRepository extends BaseRepository<Stock> {
           new StockResponseDTO({
             p_id: s.p_id,
             quantity: s.quantity,
-          })
+          }),
       );
     } catch (err) {
       throw err;
@@ -52,7 +55,7 @@ export class StockRepository extends BaseRepository<Stock> {
   //update stock -quantity
   async updateStockQuantity(
     p_id: number,
-    quantity: number
+    quantity: number,
   ): Promise<{ p_id: number } | null> {
     return await this.model.update({
       where: { p_id },
@@ -78,3 +81,4 @@ export class StockRepository extends BaseRepository<Stock> {
     }
   }
 }
+//#endregion

@@ -1,14 +1,19 @@
+//#region imports
 import { prisma } from "../models/prismaDbConnection";
 import { ProductRepository } from "../repositories/product.repository";
 import { ProductResponseDTO } from "../dtos/product.dto";
 import { UnitOfWork } from "../repositories/unitofwork";
+//#endregion
+
+//#region Services
+
 const uow = new UnitOfWork();
 
 //insert product
 export const insertProduct = async (
   p_name: string,
   price: number,
-  c_id: number | null = null
+  c_id: number | null = null,
 ): Promise<number | null> => {
   return await uow.execute(async (repos) => {
     const productId = await repos.products.insertProduct(p_name, price, c_id);
@@ -37,7 +42,7 @@ export const updateProduct = async (
   p_id: number,
   p_name: string,
   price: number,
-  c_id: number | null = null
+  c_id: number | null = null,
 ): Promise<number | null> => {
   const prodRepo = new ProductRepository(prisma);
   const productId = await prodRepo.updateProduct(p_id, p_name, price, c_id);
@@ -52,3 +57,4 @@ export const deleteProduct = async (p_id: number) => {
   if (!productId) return null;
   return productId;
 };
+//#endregion

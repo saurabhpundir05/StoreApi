@@ -1,14 +1,17 @@
+//#region imports
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
+//#endregion
 
+//#region CheckAuth
 dotenv.config();
 
 //authentication using Jwt
 async function checkAuthUsingJwt(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
@@ -22,6 +25,7 @@ async function checkAuthUsingJwt(
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
       id: number;
       name: string;
+      role: string;
     };
     (req as any).user = decoded;
     next();
@@ -33,3 +37,4 @@ async function checkAuthUsingJwt(
 }
 
 export default checkAuthUsingJwt;
+//#endregion

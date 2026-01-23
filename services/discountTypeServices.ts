@@ -1,18 +1,22 @@
+//#region imports
 import { prisma } from "../models/prismaDbConnection";
 import { DiscountValuesRepository } from "../repositories/discount.type.repository";
 import { AddDTO } from "../dtos/discountType.dto";
+//#endregion
+
+//#region Services
 
 //add discount type
 export const insertDiscountValue = async (
   d_id: number,
   d_flat: number | null = null,
-  d_percent: number | null = null
+  d_percent: number | null = null,
 ): Promise<number> => {
   const disRepo = new DiscountValuesRepository(prisma);
   return await disRepo.insertDiscountValue(
     d_id,
     d_flat ?? null,
-    d_percent ?? null
+    d_percent ?? null,
   );
 };
 
@@ -26,9 +30,11 @@ export const getAllDiscountValues = async () => {
 export const updateDiscountValues = async (
   d_id: number,
   d_flat: number | null = null,
-  d_percent: number | null = null
+  d_percent: number | null = null,
 ) => {
   const disRepo = new DiscountValuesRepository(prisma);
   const dto = new AddDTO({ d_id, d_flat, d_percent });
   return await disRepo.updateDiscountValues(dto);
 };
+
+//#endregion

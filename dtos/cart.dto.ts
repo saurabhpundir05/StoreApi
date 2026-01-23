@@ -1,3 +1,4 @@
+// DTO for Cart Response
 export interface Cart {
   c_id: number;
   id: number;
@@ -8,9 +9,10 @@ export interface Cart {
   d_type: string | null;
   d_value: number | null;
   t_price: number;
+  d_price: number;
   createdAt: Date;
 }
-// DTO for Cart Response
+
 export class CartResponseDTO {
   c_id: number;
   id: number;
@@ -21,6 +23,7 @@ export class CartResponseDTO {
   d_type: string | null;
   d_value: number | null;
   t_price: number;
+  d_price: number;
   createdAt: Date;
 
   constructor(cart: Cart) {
@@ -33,6 +36,7 @@ export class CartResponseDTO {
     this.d_type = cart.d_type;
     this.d_value = cart.d_value;
     this.t_price = cart.t_price;
+    this.d_price = cart.d_price;
     this.createdAt = cart.createdAt;
   }
 }

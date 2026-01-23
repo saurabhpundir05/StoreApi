@@ -1,15 +1,20 @@
+//#region imports
+import { emitWarning } from "node:process";
 import { prisma } from "../models/prismaDbConnection";
 import { AdminRepository } from "../repositories/admin.repository";
+//#endregion
 
-//signup
+//#region Services
+
+//signup- used to create a new admin
 export const insertAdmin = async (
-  id: number,
+  email: string,
   name: string,
-  password: string
+  password: string,
 ) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const insertAdmin = await adRepo.insertAdmin(id, name, password);
+    const insertAdmin = await adRepo.insertAdmin(email, name, password);
     if (!insertAdmin) {
       return null;
     } else {
@@ -20,11 +25,26 @@ export const insertAdmin = async (
   }
 };
 
-//login
-export const getAdminDetail = async (id: number) => {
+//login - gets admin details by email return name, id, email, password
+export const getAdminDetail = async (email: string) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const loginAdmin = await adRepo.getAdminDetail(id);
+    const loginAdmin = await adRepo.getAdminDetail(email);
+    if (loginAdmin) {
+      return loginAdmin;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+//get getAdminDetailById
+export const getAdminDetailById = async (id: number) => {
+  const adRepo = new AdminRepository(prisma);
+  try {
+    const loginAdmin = await adRepo.getAdminDetailById(id);
     if (loginAdmin) {
       return loginAdmin;
     } else {
@@ -38,12 +58,13 @@ export const getAdminDetail = async (id: number) => {
 //update user name and password
 export const updateAdmin = async (
   id: number,
+  email: string,
   name: string,
-  password: string
+  password: string,
 ) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const updateAdmin = await adRepo.updateAdmin(id, name, password);
+    const updateAdmin = await adRepo.updateAdmin(id, email, name, password);
     if (!updateAdmin) {
       return null;
     } else {
@@ -54,7 +75,7 @@ export const updateAdmin = async (
   }
 };
 
-//hard delete user
+//hard delete admin - permanently delete admin from database
 export const deleteAdmin = async (id: number) => {
   const adRepo = new AdminRepository(prisma);
   try {
@@ -69,7 +90,7 @@ export const deleteAdmin = async (id: number) => {
   }
 };
 
-//soft delete user
+//soft delete admin - admin id is deactivated
 export const softDeleteAdmin = async (id: number) => {
   const adRepo = new AdminRepository(prisma);
   try {
@@ -83,3 +104,4 @@ export const softDeleteAdmin = async (id: number) => {
     throw error;
   }
 };
+//#endregion
