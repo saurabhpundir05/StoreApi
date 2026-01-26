@@ -14,13 +14,13 @@ model Category {
 }
 
 model Product {
-  p_id      Int       @id @default(autoincrement())
-  p_name    String    @unique
-  price     Decimal   @db.Decimal(10, 2)
-  c_id      Int?
-  category  Category? @relation(fields: [c_id], references: [c_id], onUpdate: Cascade, onDelete: Restrict)
-  stock     Stock?
-  discount  Discount?
+  p_id     Int       @id @default(autoincrement())
+  p_name   String    @unique
+  price    Decimal   @db.Decimal(10, 2)
+  c_id     Int?
+  category Category? @relation(fields: [c_id], references: [c_id], onUpdate: Cascade, onDelete: Restrict)
+  stock    Stock?
+  discount Discount?
 }
 
 model Stock {
@@ -36,53 +36,50 @@ enum DiscountType {
 }
 
 model Discount {
-  d_id      Int          @id @default(autoincrement())
-  p_id      Int          @unique
-  d_type    DiscountType 
-  d_type    DiscountType
-  product   Product      @relation(fields: [p_id], references: [p_id], onUpdate: Cascade, onDelete: Cascade)
+  d_id           Int             @id @default(autoincrement())
+  p_id           Int             @unique
+  d_type         DiscountType
+  product        Product         @relation(fields: [p_id], references: [p_id], onUpdate: Cascade, onDelete: Cascade)
   discountValues DiscountValues?
 }
 
 model DiscountValues {
-  d_id       Int       @id
-  d_flat     Int?
-  d_percent  Decimal?  @db.Decimal(5, 2)
-  discount   Discount  @relation(fields: [d_id], references: [d_id], onUpdate: Cascade, onDelete: Cascade)
+  d_id      Int      @id
+  d_flat    Int?
+  d_percent Decimal? @db.Decimal(5, 2)
+  discount  Discount @relation(fields: [d_id], references: [d_id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Users {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
-  email     String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
   isDeleted Boolean? @default(false)
   tokenId   String   @db.VarChar(255)
-  cart Cart[]
+  cart      Cart[]
 }
 
-model Admin{
+model Admin {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
-  email     String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
   isDeleted Boolean? @default(false)
   tokenId   String   @db.VarChar(255)
 }
 
 model Cart {
-  c_id      Int       @id @default(autoincrement())
+  c_id      Int      @id @default(autoincrement())
   id        Int
-  Users     Users     @relation(fields: [id],references: [id])
-  p_id      Int       
-  p_name    String    
-  p_id      Int       @unique
-  p_name    String    @unique
-  price     Decimal   @db.Decimal(10, 2)
-  quantity  Int       
+  user      Users    @relation(fields: [id], references: [id])
+  p_id      Int
+  p_name    String
+  price     Decimal  @db.Decimal(10, 2)
+  quantity  Int
   d_type    String
-  d_value   Decimal    @db.Decimal(10,2)
-  t_price   Decimal    @db.Decimal(10, 2)
-  d_price   Decima     @db.Decimal(10,2)
-  createdAt DateTime  @default(now())
+  d_value   Decimal  @db.Decimal(10, 2)
+  t_price   Decimal  @db.Decimal(10, 2)
+  d_price   Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
 }
