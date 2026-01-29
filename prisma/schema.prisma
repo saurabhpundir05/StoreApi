@@ -87,8 +87,3 @@ model Cart {
   users     Users?   @relation(fields: [usersId], references: [id])
   usersId   String?
 }
-
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "diagram.png"
-}
