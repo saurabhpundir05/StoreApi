@@ -2,8 +2,9 @@
 import { Request, Response, NextFunction } from "express";
 //#endregion
 
-//#region CheckTrueUser
+//#region middleware
 
+//This function only allows the user to work on own account only
 function checkUser(req: any, res: Response, next: NextFunction) {
   const authUser = req.user;
   const { id } = req.body;

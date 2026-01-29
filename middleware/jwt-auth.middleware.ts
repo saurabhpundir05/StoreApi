@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 //#endregion
 
-//#region CheckAuth
+//#region middleware
 dotenv.config();
 
 //authentication using Jwt
@@ -23,7 +23,7 @@ async function checkAuthUsingJwt(
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      id: number;
+      id: string;
       name: string;
       role: string;
     };

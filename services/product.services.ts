@@ -1,5 +1,5 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
+import { prisma } from "../models/prisma";
 import { ProductRepository } from "../repositories/product.repository";
 import { ProductResponseDTO } from "../dtos/product.dto";
 import { UnitOfWork } from "../repositories/unitofwork";

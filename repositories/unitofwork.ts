@@ -1,6 +1,6 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
-import { UserRepository } from "./user.repository";
+import { prisma } from "../models/prisma";
+import { UserRepository } from "./users.repository";
 import { ProductRepository } from "./product.repository";
 import { StockRepository } from "./stock.repository";
 //#endregion

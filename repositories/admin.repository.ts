@@ -29,6 +29,30 @@ export class AdminRepository extends BaseRepository<Admin> {
     }
   }
 
+  //insert admin for OAuth
+  async insertAdminOAuth(name: string, email: string, TokenId: string) {
+    try {
+      const check = await this.model.findFirst({
+        where: { TokenId },
+      });
+      if (!check) {
+        const insertAdmin = await this.model.create({
+          data: {
+            name,
+            email,
+            TokenId,
+            isDeleted: false,
+          },
+        });
+        return insertAdmin.id;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
   //get admin details
   async getAdminDetail(email: string) {
     try {
@@ -47,7 +71,7 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   //get admin details by id
-  async getAdminDetailById(id: number) {
+  async getAdminDetailById(id: string) {
     try {
       const checkAdminInDb = await this.model.findUnique({
         where: { id },
@@ -62,8 +86,27 @@ export class AdminRepository extends BaseRepository<Admin> {
       throw err;
     }
   }
+
+  //get admin details by googleId
+  async getAdminByGoogleID(TokenId: string) {
+    try {
+      const checkAdmin = await this.model.findUnique({
+        where: { TokenId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          isDeleted: true,
+        },
+      });
+      return checkAdmin;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   //update admin - name password
-  async updateAdmin(id: number, email: string, name: string, password: string) {
+  async updateAdmin(id: string, email: string, name: string, password: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
@@ -84,7 +127,7 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   // Hard delete user
-  async deleteAdmin(id: number) {
+  async deleteAdmin(id: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
@@ -104,7 +147,7 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   // Soft delete admin
-  async softDeleteAdmin(id: number) {
+  async softDeleteAdmin(id: string) {
     try {
       const check = await this.model.findFirst({
         where: { id, isDeleted: false },

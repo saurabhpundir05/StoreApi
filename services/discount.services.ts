@@ -1,5 +1,5 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
+import { prisma } from "../models/prisma";
 import { DiscountRepository } from "../repositories/discount.repository";
 import { DiscountResponseDTO } from "../dtos/discount.dto";
 import { DiscountType } from "../generated/prisma/client";

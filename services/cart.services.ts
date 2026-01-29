@@ -1,12 +1,12 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
+import { prisma } from "../models/prisma";
 import { CartRepository } from "../repositories/cart.repository";
 import { CartItemInput } from "../dtos/cart.dto";
 import { UnitOfWork } from "../repositories/unitofwork";
 import { ProductRepository } from "../repositories/product.repository";
 import { StockRepository } from "../repositories/stock.repository";
 import { DiscountRepository } from "../repositories/discount.repository";
-import { DiscountValuesRepository } from "../repositories/discount.type.repository";
+import { DiscountValuesRepository } from "../repositories/discount.values.repository";
 const uow = new UnitOfWork();
 //#endregion
 
@@ -16,7 +16,7 @@ const uow = new UnitOfWork();
 // product price, discount type on product, discount value for discount type, total price (without discount)
 // and discounted price and final price.
 export const addToCart = async (
-  id: number,
+  id: string,
   items: CartItemInput[],
 ): Promise<any[]> => {
   return await uow.execute(async (repo) => {
@@ -42,6 +42,7 @@ export const addToCart = async (
       const price = Number(product.price);
       let t_price = price * item.quantity;
       let d_price = 0;
+
       //calculate discount
       //find discount
       const disRepo = new DiscountRepository(prisma);
@@ -65,7 +66,7 @@ export const addToCart = async (
       //insert data to cart
       const cartRepo = new CartRepository(prisma);
       await cartRepo.insertData(
-        Number(id),
+        id,
         product.p_id,
         product.p_name,
         Number(product.price),

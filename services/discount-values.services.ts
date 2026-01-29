@@ -1,7 +1,7 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
-import { DiscountValuesRepository } from "../repositories/discount.type.repository";
-import { AddDTO } from "../dtos/discountType.dto";
+import { prisma } from "../models/prisma";
+import { DiscountValuesRepository } from "../repositories/discount.values.repository";
+import { AddDTO } from "../dtos/discount-values.dto";
 //#endregion
 
 //#region Services

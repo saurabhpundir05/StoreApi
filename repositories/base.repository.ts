@@ -20,7 +20,7 @@ export class BaseRepository<T> {
     return (this.db as any)[this.modelName];
   }
 
-  async findById(id: number): Promise<T | null> {
+  async findById(id: string): Promise<T | null> {
     return this.model.findUnique({ where: { id } });
   }
 
@@ -32,11 +32,11 @@ export class BaseRepository<T> {
     return this.model.create({ data });
   }
 
-  async update(id: number, data: any): Promise<T> {
+  async update(id: string, data: any): Promise<T> {
     return this.model.updateMany({ where: { id }, data });
   }
 
-  async delete(id: number): Promise<T> {
+  async delete(id: string): Promise<T> {
     return this.model.delete({ where: { id } });
   }
 }

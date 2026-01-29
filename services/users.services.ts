@@ -1,6 +1,6 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
-import { UserRepository } from "../repositories/user.repository";
+import { prisma } from "../models/prisma";
+import { UserRepository } from "../repositories/users.repository";
 import { CartRepository } from "../repositories/cart.repository";
 //#endregion
 
@@ -60,7 +60,7 @@ export const getUserDetail = async (email: string) => {
 };
 
 //get user details by Id
-export const getUserDetailById = async (id: number) => {
+export const getUserDetailById = async (id: string) => {
   const userRepo = new UserRepository(prisma);
   try {
     const loginUser = await userRepo.getUserDetailById(id);
@@ -101,14 +101,14 @@ export const getUserDetailByGoogleId = async (TokenId: string) => {
 };
 
 //get user cart history
-export const getAllUserDetails = async (id: number) => {
+export const getAllUserDetails = async (id: string) => {
   const cartRepo = new CartRepository(prisma);
-  return await cartRepo.getAllUserDetails(id);
+  return await cartRepo.getAllPersonDetails(id);
 };
 
 //update user name and password
 export const updateUser = async (
-  id: number,
+  id: string,
   name: string,
   email: string,
   password: string,
@@ -127,7 +127,7 @@ export const updateUser = async (
 };
 
 //hard delete user
-export const deleteUser = async (id: number) => {
+export const deleteUser = async (id: string) => {
   const userRepo = new UserRepository(prisma);
   try {
     const deleteUser = await userRepo.deleteUser(id);
@@ -142,7 +142,7 @@ export const deleteUser = async (id: number) => {
 };
 
 //soft delete user
-export const softDeleteUser = async (id: number) => {
+export const softDeleteUser = async (id: string) => {
   const userRepo = new UserRepository(prisma);
   try {
     const deleteUser = await userRepo.softDeleteUser(id);

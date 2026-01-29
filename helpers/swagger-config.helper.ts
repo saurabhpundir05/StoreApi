@@ -2,9 +2,15 @@
 import { Express } from "express";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import dotenv from "dotenv";
+
 //#endregion
 
-//#region SwaggerConfig
+//#region SwaggerConfiguration
+
+dotenv.config();
+const PORT = Number(process.env.PORT) || 3001;
+const HOST = String(process.env.HOST);
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -16,7 +22,8 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `http://${HOST}:${PORT}`,
+        description: "development server",
       },
     ],
     components: {
@@ -36,7 +43,6 @@ const options: swaggerJsdoc.Options = {
   },
   apis: ["./routes/*.ts"],
 };
-
 const specs = swaggerJsdoc(options);
 export const setupSwagger = (app: Express): void => {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));

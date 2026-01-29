@@ -34,7 +34,7 @@ export class UserRepository extends BaseRepository<Users> {
     }
   }
 
-  //inser user for OAuth
+  //insert user for OAuth
   async insertUserOAuth(name: string, email: string, TokenId: string) {
     try {
       const check = await this.model.findFirst({
@@ -82,7 +82,7 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   //get user detail by id getUserDetailById
-  async getUserDetailById(id: number) {
+  async getUserDetailById(id: string) {
     try {
       const checkUserinDb = await this.model.findUnique({
         where: { id },
@@ -140,7 +140,7 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   //update user - name password
-  async updateUser(id: number, name: string, email: string, password: string) {
+  async updateUser(id: string, name: string, email: string, password: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
@@ -161,7 +161,7 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   // Hard delete user
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     try {
       const check = await this.model.findFirst({
         where: { id },
@@ -181,7 +181,7 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   // Soft delete user
-  async softDeleteUser(id: number) {
+  async softDeleteUser(id: string) {
     try {
       const check = await this.model.findFirst({
         where: { id, isDeleted: false },

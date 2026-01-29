@@ -1,7 +1,6 @@
-// DTO for Cart Response
 export interface Cart {
   c_id: number;
-  id: number;
+  id: string;
   p_id: number;
   p_name: string;
   price: number;
@@ -12,10 +11,10 @@ export interface Cart {
   d_price: number;
   createdAt: Date;
 }
-
+// DTO for Cart Response
 export class CartResponseDTO {
   c_id: number;
-  id: number;
+  id: string;
   p_id: number;
   p_name: string;
   price: number;
@@ -44,15 +43,15 @@ export class CartResponseDTO {
 // DTO for insert data in cart
 // DTO for a single cart item
 export interface CartItemInput {
-  id: number;
+  id: string;
   p_name: string;
   quantity: number;
 }
 // DTO for adding multiple items to cart
 export class AddCartDTO {
-  id: number;
+  id: string;
   items: CartItemInput[];
-  constructor(data: { id: number; items: CartItemInput[] }) {
+  constructor(data: { id: string; items: CartItemInput[] }) {
     this.id = data.id;
     // Ensure items is always an array
     this.items = Array.isArray(data.items) ? data.items : [];

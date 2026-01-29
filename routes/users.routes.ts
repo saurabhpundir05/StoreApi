@@ -12,15 +12,15 @@ import {
   createNewUserOAuth,
   checkUserEmail,
   getUserDetailById,
-} from "../services/userServices";
-import { verifyGoogleToken } from "../services/googleOAuthServices";
-import { getAllUserDetails } from "../services/userServices";
-import { SignupDTO, LoginDTO, UpdateDTO, DeleteDTO } from "../dtos/user.dto";
+} from "../services/users.services";
+import { verifyGoogleToken } from "../services/google-oauth.services";
+import { getAllUserDetails } from "../services/users.services";
+import { SignupDTO, LoginDTO, UpdateDTO, DeleteDTO } from "../dtos/users.dto";
 import { CartResponseDTO } from "../dtos/cart.dto";
-import { generateToken } from "../helpers/jwtToken";
-import checkAuthUsingJwt from "../middleware/checkAuth";
-import checkUser from "../middleware/checkTrueUser";
-import { authorizeRole } from "../middleware/authorizeRole";
+import { generateToken } from "../helpers/jwt-token.helper";
+import checkAuthUsingJwt from "../middleware/jwt-auth.middleware";
+import checkUser from "../middleware/check-user.middleware";
+import { authorizeRole } from "../middleware/authorize-role.middleware";
 const router: Router = express.Router();
 import dotenv from "dotenv";
 dotenv.config();
@@ -29,77 +29,6 @@ const HOST = String(process.env.HOST);
 //#endregion
 
 //#region Api's
-/**
- * @swagger
- * components:
- *   schemas:
- *     Signup:
- *       type: object
- *       required:
- *         - name
- *         - email
- *         - password
- *       properties:
- *         name:
- *           type: string
- *           example: Gojo
- *         email:
- *           type: string
- *           example: gojo@saturo.com
- *         password:
- *           type: string
- *           example: password123
- *
- *     Login:
- *       type: object
- *       required:
- *         - email
- *         - password
- *       properties:
- *         email:
- *           type: string
- *           example: abc@xyz.com
- *         password:
- *           type: string
- *           example: password123
- *
- *     GoogleAuthTokenGenerate:
- *       type: object
- *       properties:
- *         url:
- *           type: string
- *           example: http://localhost:3000/auth/google
- *
- *     GoogleAuth:
- *       type: object
- *       required:
- *         - idToken
- *       properties:
- *         idToken:
- *           type: string
- *           example: eyJhbGciOiJSUzI1NiIsImtpZCI6...
- */
-
-/**
- * @swagger
- * /signup:
- *   post:
- *     summary: Create a new user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Signup'
- *     responses:
- *       201:
- *         description: User created successfully
- *       409:
- *         description: User already exists
- *       400:
- *         description: Validation error
- */
 
 // Signup route
 router.post("/signup", async (req: Request, res: Response) => {
@@ -126,23 +55,6 @@ router.post("/signup", async (req: Request, res: Response) => {
     return res.status(400).json({ message });
   }
 });
-
-/**
- * @swagger
- * /auth/google:
- *   get:
- *     summary: Generate Google OAuth URL
- *     tags: [Auth]
- *     responses:
- *       200:
- *         description: Google OAuth URL generated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/GoogleAuthTokenGenerate'
- *       500:
- *         description: Google OAuth failed
- */
 
 //get IdToken from GoogleOAuth
 router.get("/auth/google", async (req, res) => {
@@ -176,27 +88,6 @@ router.get("/auth/google", async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /auth/google:
- *   post:
- *     summary: Login or signup using Google OAuth
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/GoogleAuth'
- *     responses:
- *       200:
- *         description: Login successful, JWT token returned
- *       400:
- *         description: Missing idToken or id
- *       500:
- *         description: Google login failed
- */
-
 //Signup /LogIn using Google OAuth
 router.post("/auth/googleAuth", async (req: Request, res: Response) => {
   const { idToken } = req.body;
@@ -220,27 +111,6 @@ router.post("/auth/googleAuth", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: User login
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Login'
- *     responses:
- *       200:
- *         description: Login successful
- *       401:
- *         description: Invalid credentials or soft deleted user
- *       400:
- *         description: Validation error
- */
-
 //Login
 router.post("/login", async (req: Request, res: Response) => {
   try {
@@ -261,11 +131,7 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     const role = "user";
-    const token = generateToken(
-      getUserPassword.id as number,
-      getUserPassword.name,
-      role,
-    );
+    const token = generateToken(getUserPassword.id, getUserPassword.name, role);
     return res.status(200).json({
       message: "Login successful",
       token,
@@ -278,38 +144,15 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * @swagger
- * /getUserCartHistory/{id}:
- *   get:
- *     summary: Get shopping cart history of a user
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: number
- *     responses:
- *       200:
- *         description: Cart history retrieved successfully
- *       400:
- *         description: Error fetching cart history
- *       401:
- *         description: Unauthorized
- */
-
 // get shopping history
 router.get(
-  "/getUserCartHistory/:id",
-  authorizeRole("user"),
+  "/getcarthistory/:id",
   checkAuthUsingJwt,
+  authorizeRole("user"),
   async (req: Request, res: Response) => {
     try {
       const cartDTOs: CartResponseDTO[] = await getAllUserDetails(
-        Number(req.params.id),
+        String(req.params.id),
       );
       return res.status(200).json(cartDTOs);
     } catch (err: unknown) {
@@ -321,32 +164,9 @@ router.get(
   },
 );
 
-/**
- * @swagger
- * /updateUserDetails:
- *   patch:
- *     summary: Update user name and password
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Signup'
- *     responses:
- *       201:
- *         description: User updated successfully
- *       409:
- *         description: User not found
- *       400:
- *         description: Validation error
- */
-
 //update password and name
 router.patch(
-  "/updateUserDetails",
+  "/update",
   checkAuthUsingJwt,
   checkUser,
   authorizeRole("user"),
@@ -360,7 +180,7 @@ router.patch(
       }
       const hashedPassword = await bcrypt.hash(inputData.password, 10);
       const result = await updateUser(
-        Number(inputData.id),
+        inputData.id,
         inputData.name,
         inputData.email,
         hashedPassword,
@@ -381,39 +201,16 @@ router.patch(
   },
 );
 
-/**
- * @swagger
- * /softDeleteUser:
- *   delete:
- *     summary: Soft delete user account
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Login'
- *     responses:
- *       200:
- *         description: User soft deleted successfully
- *       401:
- *         description: Invalid credentials
- *       404:
- *         description: User not found or already deleted
- */
-
 // //soft delete user account
 router.delete(
-  "/softDeleteUser",
+  "/softdelete",
   checkAuthUsingJwt,
   checkUser,
   async (req: Request, res: Response) => {
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const getUserPassword = await getUserDetailById(Number(inputData.id));
+      const getUserPassword = await getUserDetailById(String(inputData.id));
       if (!getUserPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -424,7 +221,7 @@ router.delete(
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await softDeleteUser(Number(inputData.id));
+      const result = await softDeleteUser(String(inputData.id));
       if (!result) {
         return res.status(404).json({
           message: "User not found / Is hard deleted / Is SoftDeleted",
@@ -442,32 +239,9 @@ router.delete(
   },
 );
 
-/**
- * @swagger
- * /deleteUserId:
- *   delete:
- *     summary: Permanently delete user account
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Login'
- *     responses:
- *       200:
- *         description: User deleted successfully
- *       401:
- *         description: Invalid credentials
- *       404:
- *         description: User not found
- */
-
 // delete user account
 router.delete(
-  "/deleteUserId",
+  "/delete",
   checkAuthUsingJwt,
   checkUser,
   authorizeRole("admin"),
@@ -475,7 +249,7 @@ router.delete(
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const getUserPassword = await getUserDetailById(Number(inputData.id));
+      const getUserPassword = await getUserDetailById(String(inputData.id));
       if (!getUserPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -486,7 +260,7 @@ router.delete(
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await deleteUser(Number(inputData.id));
+      const result = await deleteUser(String(inputData.id));
       if (!result) {
         return res
           .status(404)
@@ -503,5 +277,204 @@ router.delete(
     }
   },
 );
+
 export default router;
+//#endregion
+
+//#region Swagger
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User authentication and management endpoints
+ */
+
+/**
+ * @swagger
+ * /users/signup:
+ *   post:
+ *     summary: User signup
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Goku"
+ *               email:
+ *                 type: string
+ *                 example: "goku@dbz.com"
+ *               password:
+ *                 type: string
+ *                 example: "asdfghjk"
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       409:
+ *         description: User with this email already exists
+ */
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: User login
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "goku@dbz.com"
+ *               password:
+ *                 type: string
+ *                 example: "asdfghjk"
+ *     responses:
+ *       200:
+ *         description: Login successful with JWT token
+ *       401:
+ *         description: Invalid credentials
+ */
+
+/**
+ * @swagger
+ * /users/getcarthistory/{id}:
+ *   get:
+ *     summary: Get shopping/cart history for a user
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: User ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of cart history for the user
+ *       400:
+ *         description: Bad request
+ */
+
+/**
+ * @swagger
+ * /users/update:
+ *   patch:
+ *     summary: Update user details
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - name
+ *               - password
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: abcdefghij...
+ *               name:
+ *                 type: string
+ *                 example: "gogeta"
+ *               password:
+ *                 type: string
+ *                 example: "abc"
+ *     responses:
+ *       201:
+ *         description: User updated successfully
+ *       400:
+ *         description: Validation or bad request
+ *       409:
+ *         description: User not found to update
+ */
+
+/**
+ * @swagger
+ * /users/softdelete:
+ *   delete:
+ *     summary: Soft delete a user account
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - password
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: abcdefgijk
+ *               password:
+ *                 type: string
+ *                 example: "asdfghjk"
+ *     responses:
+ *       200:
+ *         description: User soft deleted successfully
+ *       401:
+ *         description: Invalid credentials
+ *       404:
+ *         description: User not found / already deleted
+ */
+
+/**
+ * @swagger
+ * /users/delete:
+ *   delete:
+ *     summary: Hard delete a user account
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - password
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: abcdefg...
+ *               password:
+ *                 type: string
+ *                 example: "xyz"
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       401:
+ *         description: Invalid credentials
+ *       404:
+ *         description: User not found / already deleted
+ */
+
 //#endregion

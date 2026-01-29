@@ -31,7 +31,7 @@ export class SignupDTO {
 
 //DTO for User SignUP using Google OAuth
 export class OAuthSignupDTO {
-  id: number;
+  id: string;
   name: string;
   email: string;
   GoogleID: string;
@@ -42,7 +42,7 @@ export class OAuthSignupDTO {
     email,
     GoogleID,
   }: {
-    id: number;
+    id: string;
     name: string;
     email: string;
     password: string;
@@ -81,7 +81,7 @@ export class LoginDTO {
 
 // DTO for User Details Update
 export class UpdateDTO {
-  id: string | number;
+  id: string;
   name: string;
   email: string;
   password: string;
@@ -92,7 +92,7 @@ export class UpdateDTO {
     email,
     password,
   }: {
-    id: string | number;
+    id: string;
     name: string;
     email: string;
     password: string;
@@ -116,10 +116,10 @@ export class UpdateDTO {
 
 // DTO for User Login and delete
 export class DeleteDTO {
-  id: number | string;
+  id: string;
   password: string;
 
-  constructor({ id, password }: { id: number | string; password: string }) {
+  constructor({ id, password }: { id: string; password: string }) {
     this.id = id;
     this.password = password;
   }

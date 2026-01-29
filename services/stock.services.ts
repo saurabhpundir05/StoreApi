@@ -1,5 +1,5 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
+import { prisma } from "../models/prisma";
 import { StockRepository } from "../repositories/stock.repository";
 //#endregion
 

@@ -49,7 +49,7 @@ export class LoginDTO {
 
 // DTO for Admin Update
 export class UpdateDTO {
-  id: number;
+  id: string;
   email: string;
   name: string;
   password: string;
@@ -60,7 +60,7 @@ export class UpdateDTO {
     name,
     password,
   }: {
-    id: number;
+    id: string;
     email: string;
     name: string;
     password: string;
@@ -84,10 +84,10 @@ export class UpdateDTO {
 
 // DTO for Admin Delete
 export class DeleteDTO {
-  id: number;
+  id: string;
   password: string;
 
-  constructor({ id, password }: { id: number; password: string }) {
+  constructor({ id, password }: { id: string; password: string }) {
     this.id = id;
     this.password = password;
   }

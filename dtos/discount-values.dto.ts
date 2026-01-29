@@ -1,4 +1,4 @@
-//dto to add discountvalue
+//DTO to add discountvalue
 export interface AddDiscountTypeInput {
   d_id: number;
   d_flat?: number | null;

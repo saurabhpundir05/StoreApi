@@ -1,10 +1,29 @@
 //#region imports
-import { emitWarning } from "node:process";
-import { prisma } from "../models/prismaDbConnection";
+import { prisma } from "../models/prisma";
 import { AdminRepository } from "../repositories/admin.repository";
+import { CartRepository } from "../repositories/cart.repository";
 //#endregion
 
 //#region Services
+
+//signup using Google OAuth
+export const createNewAdminOAuth = async (
+  name: string,
+  email: string,
+  TokenId: string,
+) => {
+  const userRepo = new AdminRepository(prisma);
+  try {
+    const createAdmin = await userRepo.insertAdminOAuth(name, email, TokenId);
+    if (!createAdmin) {
+      return null;
+    } else {
+      return createAdmin;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 //signup- used to create a new admin
 export const insertAdmin = async (
@@ -41,7 +60,7 @@ export const getAdminDetail = async (email: string) => {
 };
 
 //get getAdminDetailById
-export const getAdminDetailById = async (id: number) => {
+export const getAdminDetailById = async (id: string) => {
   const adRepo = new AdminRepository(prisma);
   try {
     const loginAdmin = await adRepo.getAdminDetailById(id);
@@ -55,9 +74,26 @@ export const getAdminDetailById = async (id: number) => {
   }
 };
 
+//get Admin detail by GoogleID
+export const getAdminDetailByGoogleId = async (TokenId: string) => {
+  const userRepo = new AdminRepository(prisma);
+  try {
+    const getAdminDetailByGoogleId = await userRepo.getAdminByGoogleID(TokenId);
+    return getAdminDetailByGoogleId;
+  } catch (err) {
+    throw err;
+  }
+};
+
+//get user cart history
+export const getAllAdminDetails = async (id: string) => {
+  const cartRepo = new CartRepository(prisma);
+  return await cartRepo.getAllPersonDetails(id);
+};
+
 //update user name and password
 export const updateAdmin = async (
-  id: number,
+  id: string,
   email: string,
   name: string,
   password: string,
@@ -76,7 +112,7 @@ export const updateAdmin = async (
 };
 
 //hard delete admin - permanently delete admin from database
-export const deleteAdmin = async (id: number) => {
+export const deleteAdmin = async (id: string) => {
   const adRepo = new AdminRepository(prisma);
   try {
     const deleteAdmin = await adRepo.deleteAdmin(id);
@@ -91,7 +127,7 @@ export const deleteAdmin = async (id: number) => {
 };
 
 //soft delete admin - admin id is deactivated
-export const softDeleteAdmin = async (id: number) => {
+export const softDeleteAdmin = async (id: string) => {
   const adRepo = new AdminRepository(prisma);
   try {
     const deleteAdmin = await adRepo.softDeleteAdmin(id);

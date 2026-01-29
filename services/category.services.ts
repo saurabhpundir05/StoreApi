@@ -1,5 +1,5 @@
 //#region imports
-import { prisma } from "../models/prismaDbConnection";
+import { prisma } from "../models/prisma";
 import { CategoryRepository } from "../repositories/category.repository";
 import { CategoryResponseDTO } from "../dtos/category.dto";
 //#endregion

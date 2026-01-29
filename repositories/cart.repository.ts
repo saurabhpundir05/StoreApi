@@ -13,7 +13,7 @@ export class CartRepository extends BaseRepository<Cart> {
 
   //insert into cart
   async insertData(
-    id: number,
+    id: string,
     p_id: number,
     p_name: string,
     price: number,
@@ -60,10 +60,9 @@ export class CartRepository extends BaseRepository<Cart> {
   }
 
   //get cart details by user id
-  async getAllUserDetails(id: number): Promise<CartResponseDTO[]> {
+  async getAllPersonDetails(id: string): Promise<CartResponseDTO[]> {
     const cart: any[] = await this.model.findMany({
       where: { id: id },
-      // select: { p_name: true },
     });
     return cart.map(
       (c) =>

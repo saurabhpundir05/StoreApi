@@ -1,5 +1,8 @@
+//#region imports
 import { Request, Response, NextFunction } from "express";
+//#endregion
 
+//#region middleware
 //to check role
 export const authorizeRole = (role: "admin" | "user") => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -12,3 +15,4 @@ export const authorizeRole = (role: "admin" | "user") => {
     next();
   };
 };
+//#endregion

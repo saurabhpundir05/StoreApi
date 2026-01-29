@@ -1,7 +1,7 @@
 //#region imports
 import { DiscountType, Prisma } from "../generated/prisma/client";
 import { BaseRepository } from "./base.repository";
-import { AddDTO, DiscountResponseDTO } from "../dtos/discountType.dto";
+import { AddDTO, DiscountResponseDTO } from "../dtos/discount-values.dto";
 //#endregion
 
 //#region DiscountType Repository
