@@ -152,7 +152,7 @@ router.get(
   async (req: Request, res: Response) => {
     try {
       const cartDTOs: CartResponseDTO[] = await getAllUserDetails(
-        String(req.params.id),
+        Number(req.params.id),
       );
       return res.status(200).json(cartDTOs);
     } catch (err: unknown) {
@@ -180,7 +180,7 @@ router.patch(
       }
       const hashedPassword = await bcrypt.hash(inputData.password, 10);
       const result = await updateUser(
-        inputData.id,
+        inputData.userId,
         inputData.name,
         inputData.email,
         hashedPassword,
@@ -210,7 +210,7 @@ router.delete(
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const getUserPassword = await getUserDetailById(String(inputData.id));
+      const getUserPassword = await getUserDetailById(Number(inputData.userId));
       if (!getUserPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -221,7 +221,7 @@ router.delete(
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await softDeleteUser(String(inputData.id));
+      const result = await softDeleteUser(Number(inputData.userId));
       if (!result) {
         return res.status(404).json({
           message: "User not found / Is hard deleted / Is SoftDeleted",
@@ -249,7 +249,7 @@ router.delete(
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const getUserPassword = await getUserDetailById(String(inputData.id));
+      const getUserPassword = await getUserDetailById(Number(inputData.userId));
       if (!getUserPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -260,7 +260,7 @@ router.delete(
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await deleteUser(String(inputData.id));
+      const result = await deleteUser(Number(inputData.userId));
       if (!result) {
         return res
           .status(404)

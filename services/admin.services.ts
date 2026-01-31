@@ -60,10 +60,10 @@ export const getAdminDetail = async (email: string) => {
 };
 
 //get getAdminDetailById
-export const getAdminDetailById = async (id: string) => {
+export const getAdminDetailById = async (adminId: number) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const loginAdmin = await adRepo.getAdminDetailById(id);
+    const loginAdmin = await adRepo.getAdminDetailById(adminId);
     if (loginAdmin) {
       return loginAdmin;
     } else {
@@ -86,21 +86,26 @@ export const getAdminDetailByGoogleId = async (TokenId: string) => {
 };
 
 //get user cart history
-export const getAllAdminDetails = async (id: string) => {
+export const getAllAdminDetails = async (adminId: number) => {
   const cartRepo = new CartRepository(prisma);
-  return await cartRepo.getAllPersonDetails(id);
+  return await cartRepo.getAllAdminDetails(adminId);
 };
 
 //update user name and password
 export const updateAdmin = async (
-  id: string,
+  adminId: number,
   email: string,
   name: string,
   password: string,
 ) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const updateAdmin = await adRepo.updateAdmin(id, email, name, password);
+    const updateAdmin = await adRepo.updateAdmin(
+      adminId,
+      email,
+      name,
+      password,
+    );
     if (!updateAdmin) {
       return null;
     } else {
@@ -112,10 +117,10 @@ export const updateAdmin = async (
 };
 
 //hard delete admin - permanently delete admin from database
-export const deleteAdmin = async (id: string) => {
+export const deleteAdmin = async (adminId: number) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const deleteAdmin = await adRepo.deleteAdmin(id);
+    const deleteAdmin = await adRepo.deleteAdmin(adminId);
     if (!deleteAdmin) {
       return null;
     } else {
@@ -127,10 +132,10 @@ export const deleteAdmin = async (id: string) => {
 };
 
 //soft delete admin - admin id is deactivated
-export const softDeleteAdmin = async (id: string) => {
+export const softDeleteAdmin = async (adminId: number) => {
   const adRepo = new AdminRepository(prisma);
   try {
-    const deleteAdmin = await adRepo.softDeleteAdmin(id);
+    const deleteAdmin = await adRepo.softDeleteAdmin(adminId);
     if (!deleteAdmin) {
       return null;
     } else {

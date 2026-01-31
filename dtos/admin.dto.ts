@@ -49,23 +49,23 @@ export class LoginDTO {
 
 // DTO for Admin Update
 export class UpdateDTO {
-  id: string;
+  adminId: number;
   email: string;
   name: string;
   password: string;
 
   constructor({
-    id,
+    adminId,
     email,
     name,
     password,
   }: {
-    id: string;
+    adminId: number;
     email: string;
     name: string;
     password: string;
   }) {
-    this.id = id;
+    this.adminId = adminId;
     this.email = email;
     this.name = name;
     this.password = password;
@@ -73,7 +73,7 @@ export class UpdateDTO {
 
   // validate if all fields required and correct
   validate() {
-    if (!this.id || !this.email || !this.name || !this.password) {
+    if (!this.adminId || !this.email || !this.name || !this.password) {
       throw new Error("Id, Email, password, and name are required");
     }
     if (this.password.length < 8) {
@@ -84,17 +84,17 @@ export class UpdateDTO {
 
 // DTO for Admin Delete
 export class DeleteDTO {
-  id: string;
+  adminId: number;
   password: string;
 
-  constructor({ id, password }: { id: string; password: string }) {
-    this.id = id;
+  constructor({ adminId, password }: { adminId: number; password: string }) {
+    this.adminId = adminId;
     this.password = password;
   }
 
   // validate if all fields input
   validate() {
-    if (!this.id || !this.password) {
+    if (!this.adminId || !this.password) {
       throw new Error("Id and password are required");
     }
   }

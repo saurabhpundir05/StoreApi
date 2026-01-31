@@ -131,7 +131,7 @@ router.post("/login", async (req: Request, res: Response) => {
     }
     const role = "admin";
     const token = generateToken(
-      getAdminPassword.id as string,
+      getAdminPassword.id as number,
       getAdminPassword.name,
       role,
     );
@@ -155,7 +155,7 @@ router.get(
   async (req: Request, res: Response) => {
     try {
       const cartDTOs: CartResponseDTO[] = await getAllAdminDetails(
-        String(req.params.id),
+        Number(req.params.id),
       );
       return res.status(200).json(cartDTOs);
     } catch (err: unknown) {
@@ -178,7 +178,7 @@ router.patch(
       inputData.validate();
       const hashedPassword = await bcrypt.hash(inputData.password, 10);
       const result = await updateAdmin(
-        inputData.id,
+        inputData.adminId,
         inputData.email,
         inputData.name,
         hashedPassword,
@@ -208,7 +208,7 @@ router.delete(
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const getAdminPassword = await getAdminDetailById(inputData.id);
+      const getAdminPassword = await getAdminDetailById(inputData.adminId);
       if (!getAdminPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -219,7 +219,7 @@ router.delete(
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await softDeleteAdmin(inputData.id);
+      const result = await softDeleteAdmin(inputData.adminId);
       if (!result) {
         return res.status(404).json({
           message: "Admin not found / Is hard deleted / Is SoftDeleted",
@@ -246,7 +246,7 @@ router.delete(
     try {
       const inputData = new DeleteDTO(req.body);
       inputData.validate();
-      const getAdminPassword = await getAdminDetailById(inputData.id);
+      const getAdminPassword = await getAdminDetailById(inputData.adminId);
       if (!getAdminPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -257,7 +257,7 @@ router.delete(
       if (!isPasswordMatch) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-      const result = await deleteAdmin(inputData.id);
+      const result = await deleteAdmin(inputData.adminId);
       if (!result) {
         return res
           .status(404)

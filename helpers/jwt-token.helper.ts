@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Generate jwt token using id, name, string and role.
-export function generateToken(id: string, name: string, role: string): string {
+export function generateToken(id: number, name: string, role: string): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error("JWT_SECRET is not defined");

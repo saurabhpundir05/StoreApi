@@ -16,7 +16,8 @@ const uow = new UnitOfWork();
 // product price, discount type on product, discount value for discount type, total price (without discount)
 // and discounted price and final price.
 export const addToCart = async (
-  id: string,
+  userId: number | null,
+  adminId: number | null,
   items: CartItemInput[],
 ): Promise<any[]> => {
   return await uow.execute(async (repo) => {
@@ -66,7 +67,8 @@ export const addToCart = async (
       //insert data to cart
       const cartRepo = new CartRepository(prisma);
       await cartRepo.insertData(
-        id,
+        userId,
+        adminId,
         product.p_id,
         product.p_name,
         Number(product.price),

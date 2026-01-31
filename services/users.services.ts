@@ -60,10 +60,10 @@ export const getUserDetail = async (email: string) => {
 };
 
 //get user details by Id
-export const getUserDetailById = async (id: string) => {
+export const getUserDetailById = async (userId: number) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const loginUser = await userRepo.getUserDetailById(id);
+    const loginUser = await userRepo.getUserDetailById(userId);
     if (loginUser) {
       return loginUser;
     } else {
@@ -101,21 +101,21 @@ export const getUserDetailByGoogleId = async (TokenId: string) => {
 };
 
 //get user cart history
-export const getAllUserDetails = async (id: string) => {
+export const getAllUserDetails = async (userId: number) => {
   const cartRepo = new CartRepository(prisma);
-  return await cartRepo.getAllPersonDetails(id);
+  return await cartRepo.getAllUsersDetails(userId);
 };
 
 //update user name and password
 export const updateUser = async (
-  id: string,
+  userId: number,
   name: string,
   email: string,
   password: string,
 ) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const updateUser = await userRepo.updateUser(id, name, email, password);
+    const updateUser = await userRepo.updateUser(userId, name, email, password);
     if (!updateUser) {
       return null;
     } else {
@@ -127,10 +127,10 @@ export const updateUser = async (
 };
 
 //hard delete user
-export const deleteUser = async (id: string) => {
+export const deleteUser = async (userId: number) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const deleteUser = await userRepo.deleteUser(id);
+    const deleteUser = await userRepo.deleteUser(userId);
     if (!deleteUser) {
       return null;
     } else {
@@ -142,10 +142,10 @@ export const deleteUser = async (id: string) => {
 };
 
 //soft delete user
-export const softDeleteUser = async (id: string) => {
+export const softDeleteUser = async (userId: number) => {
   const userRepo = new UserRepository(prisma);
   try {
-    const deleteUser = await userRepo.softDeleteUser(id);
+    const deleteUser = await userRepo.softDeleteUser(userId);
     if (!deleteUser) {
       return null;
     } else {

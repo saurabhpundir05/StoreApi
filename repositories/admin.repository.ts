@@ -20,7 +20,7 @@ export class AdminRepository extends BaseRepository<Admin> {
         const insertAdmin = await this.model.create({
           data: { email, name, password, isDeleted: false },
         });
-        return insertAdmin.id;
+        return insertAdmin.adminId;
       } else {
         return null;
       }
@@ -44,7 +44,7 @@ export class AdminRepository extends BaseRepository<Admin> {
             isDeleted: false,
           },
         });
-        return insertAdmin.id;
+        return insertAdmin.adminId;
       } else {
         return null;
       }
@@ -58,7 +58,7 @@ export class AdminRepository extends BaseRepository<Admin> {
     try {
       const checkAdminInDb = await this.model.findUnique({
         where: { email },
-        select: { id: true, name: true, password: true, isDeleted: true },
+        select: { adminId: true, name: true, password: true, isDeleted: true },
       });
       if (checkAdminInDb) {
         return checkAdminInDb;
@@ -71,11 +71,11 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   //get admin details by id
-  async getAdminDetailById(id: string) {
+  async getAdminDetailById(adminId: number) {
     try {
       const checkAdminInDb = await this.model.findUnique({
-        where: { id },
-        select: { id: true, name: true, password: true, isDeleted: true },
+        where: { adminId },
+        select: { adminId: true, name: true, password: true, isDeleted: true },
       });
       if (checkAdminInDb) {
         return checkAdminInDb;
@@ -93,7 +93,7 @@ export class AdminRepository extends BaseRepository<Admin> {
       const checkAdmin = await this.model.findUnique({
         where: { TokenId },
         select: {
-          id: true,
+          adminId: true,
           name: true,
           email: true,
           isDeleted: true,
@@ -106,18 +106,23 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   //update admin - name password
-  async updateAdmin(id: string, email: string, name: string, password: string) {
+  async updateAdmin(
+    adminId: number,
+    email: string,
+    name: string,
+    password: string,
+  ) {
     try {
       const check = await this.model.findFirst({
-        where: { id },
+        where: { adminId },
       });
       if (check) {
         const updateAdmin = await this.model.update({
-          where: { id },
+          where: { adminId },
           data: { name, email, password },
-          select: { id: true },
+          select: { adminId: true },
         });
-        return updateAdmin.id;
+        return updateAdmin.adminId;
       } else {
         return null;
       }
@@ -127,17 +132,17 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   // Hard delete user
-  async deleteAdmin(id: string) {
+  async deleteAdmin(adminId: number) {
     try {
       const check = await this.model.findFirst({
-        where: { id },
+        where: { adminId },
       });
       if (check) {
         const deleteAdmin = await this.model.delete({
-          where: { id },
-          select: { id: true },
+          where: { adminId },
+          select: { adminId: true },
         });
-        return deleteAdmin.id;
+        return deleteAdmin.adminId;
       } else {
         return null;
       }
@@ -147,18 +152,18 @@ export class AdminRepository extends BaseRepository<Admin> {
   }
 
   // Soft delete admin
-  async softDeleteAdmin(id: string) {
+  async softDeleteAdmin(adminId: number) {
     try {
       const check = await this.model.findFirst({
-        where: { id, isDeleted: false },
+        where: { adminId, isDeleted: false },
       });
       if (check) {
         const softDeleteAdmin = await this.model.update({
-          where: { id },
+          where: { adminId },
           data: { isDeleted: true },
-          select: { id: true },
+          select: { adminId: true },
         });
-        return softDeleteAdmin.id;
+        return softDeleteAdmin.adminId;
       } else {
         return null;
       }

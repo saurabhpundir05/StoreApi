@@ -51,28 +51,31 @@ model DiscountValues {
 }
 
 model Users {
-  id        String   @id @default(uuid())
+  userId    Int      @id @default(autoincrement())
   name      String   @db.VarChar(50)
   email     String   @unique @db.VarChar(255)
   password  String?  @db.VarChar(128)
   isDeleted Boolean? @default(false)
   TokenId   String?  @unique @db.VarChar(255)
-  carts     Cart[]
+  cart      Cart[]   @relation("UserCarts")
 }
 
 model Admin {
-  id        String   @id @default(uuid())
+  adminId   Int      @id @default(autoincrement())
   name      String   @db.VarChar(50)
   email     String   @unique @db.VarChar(255)
   password  String?  @db.VarChar(128)
   isDeleted Boolean? @default(false)
   TokenId   String?  @unique @db.VarChar(255)
-  carts     Cart[]
+  cart      Cart[]   @relation("AdminCarts")
 }
 
 model Cart {
   c_id      Int      @id @default(autoincrement())
-  id        String
+  userId    Int?
+  user      Users?    @relation("UserCarts",fields:[userId],references:[userId])
+  adminId   Int?
+  admin     Admin?    @relation("AdminCarts",fields:[adminId],references:[adminId])
   p_id      Int
   p_name    String
   price     Decimal  @db.Decimal(10, 2)
@@ -82,8 +85,4 @@ model Cart {
   t_price   Decimal  @db.Decimal(10, 2)
   d_price   Decimal  @db.Decimal(10, 2)
   createdAt DateTime @default(now())
-  admin     Admin?   @relation(fields: [adminId], references: [id])
-  adminId   String?
-  users     Users?   @relation(fields: [usersId], references: [id])
-  usersId   String?
 }

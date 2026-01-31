@@ -31,31 +31,31 @@ export class SignupDTO {
 
 //DTO for User SignUP using Google OAuth
 export class OAuthSignupDTO {
-  id: string;
+  userId: number;
   name: string;
   email: string;
   GoogleID: string;
 
   constructor({
-    id,
+    userId,
     name,
     email,
     GoogleID,
   }: {
-    id: string;
+    userId: number;
     name: string;
     email: string;
     password: string;
     GoogleID: string;
   }) {
-    this.id = id;
+    this.userId = userId;
     this.name = name;
     this.email = email;
     this.GoogleID = GoogleID;
   }
 
   validate() {
-    if (!this.id || !this.name || !this.email || !this.GoogleID) {
+    if (!this.userId || !this.name || !this.email || !this.GoogleID) {
       throw new Error("Id, name, email, GoogleID are required");
     }
   }
@@ -81,23 +81,23 @@ export class LoginDTO {
 
 // DTO for User Details Update
 export class UpdateDTO {
-  id: string;
+  userId: number;
   name: string;
   email: string;
   password: string;
 
   constructor({
-    id,
+    userId,
     name,
     email,
     password,
   }: {
-    id: string;
+    userId: number;
     name: string;
     email: string;
     password: string;
   }) {
-    this.id = id;
+    this.userId = userId;
     this.name = name;
     this.email = email;
     this.password = password;
@@ -105,7 +105,7 @@ export class UpdateDTO {
 
   // validate if all fields required and correct
   validate() {
-    if (!this.id || !this.name || !this.email || !this.password) {
+    if (!this.userId || !this.name || !this.email || !this.password) {
       throw new Error("id, name, email, password are required");
     }
     if (this.password.length < 8) {
@@ -116,17 +116,17 @@ export class UpdateDTO {
 
 // DTO for User Login and delete
 export class DeleteDTO {
-  id: string;
+  userId: number;
   password: string;
 
-  constructor({ id, password }: { id: string; password: string }) {
-    this.id = id;
+  constructor({ userId, password }: { userId: number; password: string }) {
+    this.userId = userId;
     this.password = password;
   }
 
   // validate if all fields input
   validate() {
-    if (!this.id || !this.password) {
+    if (!this.userId || !this.password) {
       throw new Error("Email and password are required");
     }
   }

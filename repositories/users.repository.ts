@@ -25,7 +25,7 @@ export class UserRepository extends BaseRepository<Users> {
             isDeleted: false,
           },
         });
-        return insertUser.id;
+        return insertUser.userId;
       } else {
         return null;
       }
@@ -49,7 +49,7 @@ export class UserRepository extends BaseRepository<Users> {
             isDeleted: false,
           },
         });
-        return insertUser.id;
+        return insertUser.userId;
       } else {
         return null;
       }
@@ -64,7 +64,7 @@ export class UserRepository extends BaseRepository<Users> {
       const checkUserinDb = await this.model.findUnique({
         where: { email },
         select: {
-          id: true,
+          userId: true,
           name: true,
           email: true,
           password: true,
@@ -82,10 +82,10 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   //get user detail by id getUserDetailById
-  async getUserDetailById(id: string) {
+  async getUserDetailById(userId: number) {
     try {
       const checkUserinDb = await this.model.findUnique({
-        where: { id },
+        where: { userId },
         select: {
           name: true,
           password: true,
@@ -127,7 +127,7 @@ export class UserRepository extends BaseRepository<Users> {
       const checkUserinDb = await this.model.findUnique({
         where: { TokenId },
         select: {
-          id: true,
+          userId: true,
           name: true,
           email: true,
           isDeleted: true,
@@ -140,18 +140,23 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   //update user - name password
-  async updateUser(id: string, name: string, email: string, password: string) {
+  async updateUser(
+    userId: number,
+    name: string,
+    email: string,
+    password: string,
+  ) {
     try {
       const check = await this.model.findFirst({
-        where: { id },
+        where: { userId },
       });
       if (check) {
         const updateUser = await this.model.update({
-          where: { id },
+          where: { userId },
           data: { name, email, password },
-          select: { id: true },
+          select: { userId: true },
         });
-        return updateUser.id;
+        return updateUser.userId;
       } else {
         return null;
       }
@@ -161,17 +166,17 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   // Hard delete user
-  async deleteUser(id: string) {
+  async deleteUser(userId: number) {
     try {
       const check = await this.model.findFirst({
-        where: { id },
+        where: { userId },
       });
       if (check) {
         const deleteUser = await this.model.delete({
-          where: { id },
-          select: { id: true },
+          where: { userId },
+          select: { userId: true },
         });
-        return deleteUser.id;
+        return deleteUser.userId;
       } else {
         return null;
       }
@@ -181,18 +186,18 @@ export class UserRepository extends BaseRepository<Users> {
   }
 
   // Soft delete user
-  async softDeleteUser(id: string) {
+  async softDeleteUser(userId: number) {
     try {
       const check = await this.model.findFirst({
-        where: { id, isDeleted: false },
+        where: { userId, isDeleted: false },
       });
       if (check) {
         const deleteUser = await this.model.update({
-          where: { id },
+          where: { userId },
           data: { isDeleted: true },
-          select: { id: true },
+          select: { userId: true },
         });
-        return deleteUser.id;
+        return deleteUser.userId;
       } else {
         return null;
       }

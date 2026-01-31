@@ -1,6 +1,7 @@
 export interface Cart {
   c_id: number;
-  id: string;
+  userId: number | null;
+  adminId: number | null;
   p_id: number;
   p_name: string;
   price: number;
@@ -14,7 +15,8 @@ export interface Cart {
 // DTO for Cart Response
 export class CartResponseDTO {
   c_id: number;
-  id: string;
+  userId: number | null;
+  adminId: number | null;
   p_id: number;
   p_name: string;
   price: number;
@@ -27,7 +29,8 @@ export class CartResponseDTO {
 
   constructor(cart: Cart) {
     this.c_id = cart.c_id;
-    this.id = cart.id;
+    this.userId = cart.userId;
+    this.adminId = cart.adminId;
     this.p_id = cart.p_id;
     this.p_name = cart.p_name;
     this.price = cart.price;
@@ -43,16 +46,23 @@ export class CartResponseDTO {
 // DTO for insert data in cart
 // DTO for a single cart item
 export interface CartItemInput {
-  id: string;
+  userId: number | null;
+  adminId: number | null;
   p_name: string;
   quantity: number;
 }
 // DTO for adding multiple items to cart
 export class AddCartDTO {
-  id: string;
+  userId: number | null;
+  adminId: number | null;
   items: CartItemInput[];
-  constructor(data: { id: string; items: CartItemInput[] }) {
-    this.id = data.id;
+  constructor(data: {
+    userId: number | null;
+    adminId: number | null;
+    items: CartItemInput[];
+  }) {
+    this.userId = data.userId;
+    this.adminId = data.adminId;
     // Ensure items is always an array
     this.items = Array.isArray(data.items) ? data.items : [];
   }

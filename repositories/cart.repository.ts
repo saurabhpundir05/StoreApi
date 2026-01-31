@@ -13,7 +13,8 @@ export class CartRepository extends BaseRepository<Cart> {
 
   //insert into cart
   async insertData(
-    id: string,
+    userId: number | null,
+    adminId: number | null,
     p_id: number,
     p_name: string,
     price: number,
@@ -25,7 +26,8 @@ export class CartRepository extends BaseRepository<Cart> {
   ) {
     return await this.model.create({
       data: {
-        id,
+        userId,
+        adminId,
         p_id,
         p_name,
         price,
@@ -45,7 +47,8 @@ export class CartRepository extends BaseRepository<Cart> {
       (c) =>
         new CartResponseDTO({
           c_id: c.c_id,
-          id: c.id,
+          userId: c.userId,
+          adminId: c.adminId,
           p_id: c.p_id,
           p_name: c.p_name,
           price: c.price,
@@ -59,16 +62,41 @@ export class CartRepository extends BaseRepository<Cart> {
     );
   }
 
-  //get cart details by user id
-  async getAllPersonDetails(id: string): Promise<CartResponseDTO[]> {
+  //get cart details by userId
+  async getAllUsersDetails(userId: number): Promise<CartResponseDTO[]> {
     const cart: any[] = await this.model.findMany({
-      where: { id: id },
+      where: { userId: userId },
     });
     return cart.map(
       (c) =>
         new CartResponseDTO({
           c_id: c.c_id,
-          id: c.id,
+          userId: c.userId,
+          adminId: c.adminId,
+          p_id: c.p_id,
+          p_name: c.p_name,
+          price: c.price,
+          quantity: c.quantity,
+          d_type: c.d_type,
+          d_value: c.d_value,
+          t_price: c.t_price,
+          d_price: c.d_price,
+          createdAt: c.createdAt,
+        }),
+    );
+  }
+
+  //get cart details by userId
+  async getAllAdminDetails(adminId: number): Promise<CartResponseDTO[]> {
+    const cart: any[] = await this.model.findMany({
+      where: { adminId: adminId },
+    });
+    return cart.map(
+      (c) =>
+        new CartResponseDTO({
+          c_id: c.c_id,
+          userId: c.userId,
+          adminId: c.adminId,
           p_id: c.p_id,
           p_name: c.p_name,
           price: c.price,

@@ -23,7 +23,7 @@ async function checkAuthUsingJwt(
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      id: string;
+      id: number;
       name: string;
       role: string;
     };

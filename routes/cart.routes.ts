@@ -8,6 +8,7 @@ import {
   deleteAllRecords,
   getAllDetails,
 } from "../services/cart.services";
+import checkUser from "../middleware/check-user.middleware";
 //#endregion
 
 //#region Api's
@@ -22,7 +23,11 @@ router.post(
     try {
       const dto = new AddCartDTO(req.body);
       dto.validate();
-      const result = await addToCart(dto.id, dto.items);
+      const result = await addToCart(
+        Number(dto.userId),
+        Number(dto.adminId),
+        dto.items,
+      );
       return res.status(200).json({
         success: true,
         message: "Added to cart",
@@ -40,8 +45,8 @@ router.post(
 //delete cart details
 router.delete(
   "/deleteall",
-  authorizeRole("admin"),
   checkAuthUsingJwt,
+  authorizeRole("admin"),
   async (req: Request, res: Response) => {
     try {
       const result = await deleteAllRecords();
