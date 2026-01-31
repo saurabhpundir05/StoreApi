@@ -3,20 +3,29 @@ import { Request, Response, NextFunction } from "express";
 //#endregion
 
 //#region middleware
-
-//This function only allows the person to work on own account only
 function checkUser(req: any, res: Response, next: NextFunction) {
   const authUser = req.user;
-  const { id } = req.body;
-  if (!authUser || !id) {
-    return res.status(400).json({ message: "Invalid user data" });
+  const { userId, adminId } = req.body;
+
+  if (!authUser) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
-  if (Number(authUser.id) !== Number(id)) {
+
+  // Pick whichever ID is provided
+  const requestId = userId ?? adminId;
+
+  if (!requestId) {
+    return res.status(400).json({ message: "userId or adminId is required" });
+  }
+
+  if (Number(authUser.id) !== Number(requestId)) {
     return res
       .status(403)
-      .json({ message: "Can't access other person services" });
+      .json({ message: "Can't access other person's data" });
   }
+
   return next();
 }
+
 export default checkUser;
 //#endregion
